@@ -826,6 +826,260 @@
             animation: plinkoDrop 2s ease-in-out infinite;
         }
         
+        /* Plinko Game Modal */
+        .plinko-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .plinko-modal.active {
+            display: flex;
+        }
+        
+        .plinko-container {
+            background: linear-gradient(135deg, #0a0a0a, #1a0a2e);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+        }
+        
+        .plinko-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 2px solid #00ff88;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+        }
+        
+        .plinko-header h2 {
+            color: #00ff88;
+            font-size: 2rem;
+            margin: 0;
+            text-shadow: 0 0 20px #00ff88;
+        }
+        
+        .close-plinko {
+            background: #ff4444;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-plinko:hover {
+            background: #ff6666;
+            transform: scale(1.1);
+        }
+        
+        .plinko-game {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .plinko-controls {
+            width: 300px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            color: #00ff88;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .amount-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .coin-icon {
+            font-size: 1.2rem;
+        }
+        
+        .amount-input input {
+            background: transparent;
+            border: none;
+            color: #00ff88;
+            font-size: 1.1rem;
+            width: 100px;
+            outline: none;
+        }
+        
+        .amount-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .amount-buttons button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-buttons button:hover {
+            background: #00ffaa;
+            transform: scale(1.05);
+        }
+        
+        .control-group select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+        }
+        
+        .plinko-controls .play-button {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+        
+        .plinko-controls .play-button:hover {
+            background: linear-gradient(135deg, #00ff88, #00ffaa);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .plinko-controls .play-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .plinko-board {
+            flex: 1;
+            background: linear-gradient(135deg, #000, #1a0a2e);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .ball {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            z-index: 10;
+            display: none;
+        }
+        
+        .pegs-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .peg-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .peg {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        
+        .multipliers {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .multiplier {
+            background: linear-gradient(135deg, #ff4444, #ff6666);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+        }
+        
+        .multiplier.high {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+        }
+        
+        .multiplier.medium {
+            background: linear-gradient(135deg, #ffa726, #ffb74d);
+        }
+        
+        .multiplier.low {
+            background: linear-gradient(135deg, #66bb6a, #81c784);
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .games-grid {
