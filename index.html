@@ -1869,7 +1869,7 @@
             }
             
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 50; // Optimal spacing from triangle
+            const multiplierY = boardHeight - 45; // Better spacing from triangle
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
@@ -1877,7 +1877,7 @@
                 multiplier.style.position = 'absolute';
                 multiplier.style.left = (index * slotWidth) + 'px';
                 multiplier.style.top = multiplierY + 'px';
-                multiplier.style.width = (slotWidth - 1) + 'px'; // Full width with tiny gap
+                multiplier.style.width = (slotWidth - 2) + 'px'; // Proper gap between multipliers
                 multiplier.style.height = '40px'; // Consistent height
                 multiplier.style.textAlign = 'center';
                 // Dynamic font size based on number of multipliers
@@ -1952,22 +1952,39 @@
             
             // Ball physics properties
             let x = boardWidth / 2; // Start at center
-            let y = 15; // Start near top
-            let vx = (Math.random() - 0.5) * 0.5; // Very small random horizontal velocity
+            let y = 20; // Start near top
+            let vx = (Math.random() - 0.5) * 0.3; // Very small random horizontal velocity
             let vy = 0; // Start with no vertical velocity
             
             // Physics constants (improved for realistic Plinko)
-            const gravity = 0.3; // Moderate gravity acceleration
-            const restitution = 0.7; // Higher bounce energy retention
-            const airResistance = 0.998; // Less air resistance for smoother movement
-            const minSpeed = 0.05; // Lower minimum speed for more natural stopping
+            const gravity = 0.4; // Stronger gravity for more natural fall
+            const restitution = 0.6; // Moderate bounce energy retention
+            const airResistance = 0.999; // Slight air resistance
+            const minSpeed = 0.1; // Higher minimum speed to prevent infinite loops
             
             // Collision detection variables
             const collisionCooldown = 3; // Frames to wait before same peg collision
             let lastCollisionPeg = -1;
             let collisionCooldownCounter = 0;
+            let frameCount = 0; // Safety counter to prevent infinite loops
             
             const animate = () => {
+                frameCount++; // Increment safety counter
+                
+                // Safety check - force end if too many frames
+                if (frameCount > 1000) {
+                    // Force end - use center multiplier
+                    const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    const result = multiplierValues[4]; // Center multiplier
+                    showPlinkoResult(result, betAmount);
+                    setTimeout(() => {
+                        ball.style.display = 'none';
+                        document.getElementById('playButton').disabled = false;
+                        document.getElementById('playButton').textContent = 'Play';
+                    }, 3000);
+                    return;
+                }
+                
                 // Apply gravity (realistic acceleration)
                 vy += gravity;
                 
@@ -2010,12 +2027,12 @@
                             vy = Math.sin(reflectionAngle) * newSpeed;
                             
                             // Add realistic random variation (smaller for more controlled bounces)
-                            const randomVariation = 0.15; // Reduced for more predictable physics
+                            const randomVariation = 0.2; // Slightly more variation for natural movement
                             vx += (Math.random() - 0.5) * randomVariation;
                             vy += (Math.random() - 0.5) * randomVariation;
                             
                             // Move ball away from peg to prevent sticking
-                            const overlap = collisionDistance - distance + 1; // Small buffer
+                            const overlap = collisionDistance - distance + 2; // Larger buffer to prevent sticking
                             const moveX = Math.cos(collisionAngle) * overlap;
                             const moveY = Math.sin(collisionAngle) * overlap;
                             x += moveX;
@@ -2043,7 +2060,7 @@
                 ball.style.top = y + 'px';
                 
                 // Check if ball reached bottom slots (multipliers are now at bottom)
-                if (y > boardHeight - 50) { // Adjusted for bottom multipliers
+                if (y > boardHeight - 45) { // Adjusted for bottom multipliers
                     // Get current risk level and multiplier values
                     const riskLevel = document.getElementById('riskLevel').value;
                     let multiplierValues;
