@@ -1080,6 +1080,130 @@
             background: linear-gradient(135deg, #66bb6a, #81c784);
         }
         
+        /* Plinko Result Display */
+        .plinko-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.8);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .plinko-result.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .plinko-result.hide {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .result-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .result-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .result-value.multiplier-high {
+            color: #ff4444;
+            text-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+        }
+        
+        .result-value.multiplier-medium {
+            color: #ffa726;
+            text-shadow: 0 0 5px rgba(255, 167, 38, 0.5);
+        }
+        
+        .result-value.multiplier-low {
+            color: #66bb6a;
+            text-shadow: 0 0 5px rgba(102, 187, 106, 0.5);
+        }
+        
+        .result-value.winnings {
+            color: #00ff88;
+            font-size: 1.3rem;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+        }
+        
+        /* Plinko Message Display */
+        .plinko-message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50px);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .plinko-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .plinko-message.hide {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-50px);
+        }
+        
+        .plinko-message.error {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+            color: #ff4444;
+        }
+        
+        .plinko-message.success {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .games-grid {
@@ -1669,39 +1793,108 @@
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             
             if (betAmount <= 0) {
-                alert('Please enter a valid bet amount!');
+                showPlinkoMessage('Please enter a valid bet amount!', 'error');
                 return;
             }
             
             playButton.disabled = true;
             playButton.textContent = 'Playing...';
             
-            // Show ball
+            // Show ball and start animation
             ball.style.display = 'block';
             ball.style.top = '20px';
             ball.style.left = '50%';
             ball.style.transform = 'translateX(-50%)';
             
-            // Animate ball drop
-            setTimeout(() => {
-                const finalPosition = Math.random() * 100; // 0-100%
-                ball.style.top = '85%';
-                ball.style.left = finalPosition + '%';
-                ball.style.transform = 'translateX(-50%)';
+            // Start realistic ball physics animation
+            animatePlinkoBall(ball, betAmount);
+        }
+        
+        function animatePlinkoBall(ball, betAmount) {
+            const board = document.getElementById('plinkoBoard');
+            const boardRect = board.getBoundingClientRect();
+            const ballSize = 20;
+            
+            let x = boardRect.width / 2;
+            let y = 20;
+            let vx = (Math.random() - 0.5) * 2; // Random horizontal velocity
+            let vy = 0;
+            const gravity = 0.3;
+            const bounce = 0.7;
+            const friction = 0.98;
+            
+            const animate = () => {
+                // Apply gravity
+                vy += gravity;
                 
-                // Calculate result after animation
-                setTimeout(() => {
+                // Update position
+                x += vx;
+                y += vy;
+                
+                // Check peg collisions (simplified)
+                const pegRows = document.querySelectorAll('.peg-row');
+                pegRows.forEach((row, rowIndex) => {
+                    const pegs = row.querySelectorAll('.peg');
+                    pegs.forEach((peg, pegIndex) => {
+                        const pegRect = peg.getBoundingClientRect();
+                        const boardRect = board.getBoundingClientRect();
+                        const pegX = pegRect.left - boardRect.left + pegRect.width / 2;
+                        const pegY = pegRect.top - boardRect.top + pegRect.height / 2;
+                        
+                        const dx = x - pegX;
+                        const dy = y - pegY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 15) { // Collision detected
+                            // Bounce off peg
+                            const angle = Math.atan2(dy, dx);
+                            const speed = Math.sqrt(vx * vx + vy * vy);
+                            vx = Math.cos(angle) * speed * bounce;
+                            vy = Math.sin(angle) * speed * bounce;
+                            
+                            // Add some randomness
+                            vx += (Math.random() - 0.5) * 2;
+                        }
+                    });
+                });
+                
+                // Apply friction
+                vx *= friction;
+                
+                // Check walls
+                if (x < ballSize / 2) {
+                    x = ballSize / 2;
+                    vx = Math.abs(vx) * bounce;
+                }
+                if (x > boardRect.width - ballSize / 2) {
+                    x = boardRect.width - ballSize / 2;
+                    vx = -Math.abs(vx) * bounce;
+                }
+                
+                // Update ball position
+                ball.style.left = x + 'px';
+                ball.style.top = y + 'px';
+                
+                // Check if ball reached bottom
+                if (y > boardRect.height - 100) {
+                    // Calculate final result based on x position
+                    const finalPosition = (x / boardRect.width) * 100;
                     const result = calculatePlinkoResult(finalPosition);
                     showPlinkoResult(result, betAmount);
                     
                     // Reset
                     setTimeout(() => {
                         ball.style.display = 'none';
-                        playButton.disabled = false;
-                        playButton.textContent = 'Play';
-                    }, 2000);
-                }, 1000);
-            }, 100);
+                        document.getElementById('playButton').disabled = false;
+                        document.getElementById('playButton').textContent = 'Play';
+                    }, 3000);
+                    return;
+                }
+                
+                requestAnimationFrame(animate);
+            };
+            
+            requestAnimationFrame(animate);
         }
         
         function calculatePlinkoResult(position) {
@@ -1715,7 +1908,73 @@
         
         function showPlinkoResult(multiplier, betAmount) {
             const winnings = betAmount * multiplier;
-            alert(`🎉 Plinko Result!\n\nBet: $${betAmount.toFixed(2)}\nMultiplier: ${multiplier}x\nWinnings: $${winnings.toFixed(2)}`);
+            
+            // Create result display
+            const resultDisplay = document.createElement('div');
+            resultDisplay.className = 'plinko-result';
+            resultDisplay.innerHTML = `
+                <div class="result-content">
+                    <div class="result-title">🎉 Plinko Result!</div>
+                    <div class="result-details">
+                        <div class="result-item">
+                            <span class="result-label">Bet:</span>
+                            <span class="result-value">$${betAmount.toFixed(2)}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Multiplier:</span>
+                            <span class="result-value multiplier-${multiplier >= 2 ? 'high' : multiplier >= 1 ? 'medium' : 'low'}">${multiplier}x</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Winnings:</span>
+                            <span class="result-value winnings">$${winnings.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add to plinko board
+            const plinkoBoard = document.getElementById('plinkoBoard');
+            plinkoBoard.appendChild(resultDisplay);
+            
+            // Animate result
+            setTimeout(() => {
+                resultDisplay.classList.add('show');
+            }, 100);
+            
+            // Remove result after 3 seconds
+            setTimeout(() => {
+                resultDisplay.classList.add('hide');
+                setTimeout(() => {
+                    if (resultDisplay.parentNode) {
+                        resultDisplay.parentNode.removeChild(resultDisplay);
+                    }
+                }, 500);
+            }, 3000);
+        }
+        
+        function showPlinkoMessage(message, type = 'info') {
+            const messageDisplay = document.createElement('div');
+            messageDisplay.className = `plinko-message ${type}`;
+            messageDisplay.textContent = message;
+            
+            // Add to plinko board
+            const plinkoBoard = document.getElementById('plinkoBoard');
+            plinkoBoard.appendChild(messageDisplay);
+            
+            // Animate message
+            setTimeout(() => {
+                messageDisplay.classList.add('show');
+            }, 100);
+            
+            // Remove message after 2 seconds
+            setTimeout(() => {
+                messageDisplay.classList.add('hide');
+                setTimeout(() => {
+                    if (messageDisplay.parentNode) {
+                        messageDisplay.parentNode.removeChild(messageDisplay);
+                    }
+                }, 300);
+            }, 2000);
         }
         
         // Gambling Games Library Data
