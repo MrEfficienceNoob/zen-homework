@@ -1012,15 +1012,15 @@
         }
         
         .ball {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             background: radial-gradient(circle, #ff6b6b, #ee5a52);
             border-radius: 50%;
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
             z-index: 10;
             display: none;
             transition: none; /* Remove transitions for smooth physics */
@@ -1307,11 +1307,11 @@
                     <div class="control-group">
                         <label>Rows</label>
                         <select id="rowCount">
-                            <option value="12">12</option>
-                            <option value="14">14</option>
                             <option value="16">16</option>
                             <option value="18">18</option>
                             <option value="20">20</option>
+                            <option value="22">22</option>
+                            <option value="24">24</option>
                         </select>
                     </div>
                     <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
@@ -1756,15 +1756,15 @@
             // Store peg positions for physics calculations
             window.plinkoPegs = [];
             
-            // Create large triangular peg arrangement to fill the entire game board
+            // Create massive triangular peg arrangement to fill the ENTIRE game board
             const boardWidth = 400;
             const boardHeight = 400; // Full height of the game area
-            const pegRadius = 6; // Slightly larger pegs
-            const rowSpacing = 25; // Closer vertical spacing for more rows
-            const startY = 30; // Start closer to top
+            const pegRadius = 8; // Much larger pegs for better visibility
+            const rowSpacing = 20; // Tighter vertical spacing to fit more rows
+            const startY = 20; // Start very close to top
             
-            // Calculate how many rows we can fit
-            const maxRows = Math.floor((boardHeight - startY - 80) / rowSpacing); // Leave space for multipliers
+            // Calculate how many rows we can fit to fill the entire board
+            const maxRows = Math.floor((boardHeight - startY - 60) / rowSpacing); // Minimal space for multipliers
             const actualRows = Math.min(rowCount, maxRows);
             
             for (let row = 0; row < actualRows; row++) {
@@ -1778,7 +1778,7 @@
                 
                 // Calculate number of pegs in this row (triangular pattern)
                 const pegsInRow = row + 1;
-                const horizontalSpacing = 20; // Closer horizontal spacing
+                const horizontalSpacing = 15; // Much tighter horizontal spacing to fill width
                 const totalPegWidth = (pegsInRow - 1) * horizontalSpacing;
                 const startX = (boardWidth - totalPegWidth) / 2; // Center the row
                 
@@ -1787,12 +1787,12 @@
                     peg.className = 'peg';
                     peg.style.position = 'absolute';
                     peg.style.left = (startX + col * horizontalSpacing) + 'px';
-                    peg.style.top = '-6px'; // Center vertically on the row
+                    peg.style.top = '-8px'; // Center vertically on the row
                     peg.style.width = (pegRadius * 2) + 'px';
                     peg.style.height = (pegRadius * 2) + 'px';
                     peg.style.borderRadius = '50%';
                     peg.style.background = '#fff';
-                    peg.style.boxShadow = '0 0 12px rgba(255, 255, 255, 0.9)';
+                    peg.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.9)';
                     peg.style.zIndex = '10';
                     
                     // Store peg position for physics
@@ -1808,10 +1808,10 @@
                 pegsContainer.appendChild(pegRow);
             }
             
-            // Create multipliers at the BOTTOM with proper slot positioning
+            // Create multipliers at the VERY BOTTOM with minimal spacing
             const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 60; // Position at bottom
+            const multiplierY = boardHeight - 50; // Position at very bottom with minimal space
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
@@ -1885,7 +1885,7 @@
         function animatePlinkoBall(ball, betAmount) {
             const board = document.getElementById('plinkoBoard');
             const boardRect = board.getBoundingClientRect();
-            const ballRadius = 8;
+            const ballRadius = 10; // Slightly larger ball for better visibility
             const boardWidth = 400;
             const boardHeight = 400; // Match the new board height
             
