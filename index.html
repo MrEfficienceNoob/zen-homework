@@ -541,14 +541,17 @@
             position: absolute;
             top: 30px;
             left: 30px;
-            background: transparent;
-            color: #8b5cf6;
-            border: 2px solid #8b5cf6;
-            padding: 10px 20px;
+            background: transparent !important;
+            color: #8b5cf6 !important;
+            border: 2px solid #8b5cf6 !important;
+            padding: 10px 20px !important;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
         }
         
         .back-button:hover {
@@ -1542,10 +1545,12 @@
             const gamesGrid = document.getElementById('gamesGrid');
             const libraryTitle = document.querySelector('.library-header h1');
             const librarySubtitle = document.querySelector('.library-header p');
+            const backButton = document.querySelector('.back-button');
             
             // Update header for Gamba library
             libraryTitle.textContent = '🎰 Gamba Games 🎰';
             librarySubtitle.textContent = 'Ethical gambling games with in-game currency only';
+            backButton.textContent = '← Back';
             
             gamesGrid.innerHTML = '';
             
@@ -1606,10 +1611,12 @@
             const gamesGrid = document.getElementById('gamesGrid');
             const libraryTitle = document.querySelector('.library-header h1');
             const librarySubtitle = document.querySelector('.library-header p');
+            const backButton = document.querySelector('.back-button');
             
             // Reset header for normal games
             libraryTitle.textContent = 'Game Library';
             librarySubtitle.textContent = 'Choose from our collection of games';
+            backButton.textContent = '← Back';
             
             gamesGrid.innerHTML = '';
             
