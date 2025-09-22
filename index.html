@@ -1012,17 +1012,18 @@
         }
         
         .ball {
-            width: 20px;
-            height: 20px;
-            background: #fff;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #ff6b6b, #ee5a52);
             border-radius: 50%;
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
             z-index: 10;
             display: none;
+            transition: none; /* Remove transitions for smooth physics */
         }
         
         .pegs-container {
@@ -1750,33 +1751,84 @@
             pegsContainer.innerHTML = '';
             multipliers.innerHTML = '';
             
-            // Create pegs
+            // Store peg positions for physics calculations
+            window.plinkoPegs = [];
+            
+            // Create proper triangular peg arrangement with realistic spacing
+            const boardWidth = 400;
+            const pegRadius = 4;
+            const rowSpacing = 30; // Vertical spacing between rows
+            const startY = 50; // Starting Y position
+            
             for (let row = 0; row < rowCount; row++) {
                 const pegRow = document.createElement('div');
                 pegRow.className = 'peg-row';
+                pegRow.style.position = 'absolute';
+                pegRow.style.top = (startY + row * rowSpacing) + 'px';
+                pegRow.style.left = '0px';
+                pegRow.style.width = '100%';
+                pegRow.style.height = '1px';
                 
-                for (let col = 0; col <= row; col++) {
+                // Calculate number of pegs in this row (triangular pattern)
+                const pegsInRow = row + 1;
+                const totalPegWidth = (pegsInRow - 1) * 25; // 25px horizontal spacing
+                const startX = (boardWidth - totalPegWidth) / 2; // Center the row
+                
+                for (let col = 0; col < pegsInRow; col++) {
                     const peg = document.createElement('div');
                     peg.className = 'peg';
+                    peg.style.position = 'absolute';
+                    peg.style.left = (startX + col * 25) + 'px';
+                    peg.style.top = '-4px'; // Center vertically on the row
+                    peg.style.width = (pegRadius * 2) + 'px';
+                    peg.style.height = (pegRadius * 2) + 'px';
+                    peg.style.borderRadius = '50%';
+                    peg.style.background = '#fff';
+                    peg.style.boxShadow = '0 0 8px rgba(255, 255, 255, 0.8)';
+                    peg.style.zIndex = '10';
+                    
+                    // Store peg position for physics
+                    window.plinkoPegs.push({
+                        x: startX + col * 25 + pegRadius,
+                        y: startY + row * rowSpacing,
+                        radius: pegRadius
+                    });
+                    
                     pegRow.appendChild(peg);
                 }
                 
                 pegsContainer.appendChild(pegRow);
             }
             
-            // Create multipliers
-            const multiplierValues = ['5.6x', '2.1x', '1.1x', '1x', '0.5x', '1x', '1.1x', '2.1x', '5.6x'];
+            // Create multipliers with proper slot positioning
+            const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+            const slotWidth = boardWidth / multiplierValues.length;
+            
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
                 multiplier.className = 'multiplier';
-                if (value.includes('5.6') || value.includes('2.1')) {
-                    multiplier.classList.add('high');
-                } else if (value.includes('1.1')) {
-                    multiplier.classList.add('medium');
-                } else {
-                    multiplier.classList.add('low');
+                multiplier.style.position = 'absolute';
+                multiplier.style.left = (index * slotWidth + slotWidth/2 - 25) + 'px';
+                multiplier.style.top = '0px';
+                multiplier.style.width = '50px';
+                multiplier.style.textAlign = 'center';
+                multiplier.style.fontSize = '0.9rem';
+                multiplier.style.fontWeight = 'bold';
+                multiplier.style.padding = '8px 4px';
+                multiplier.style.borderRadius = '8px';
+                multiplier.style.background = 'linear-gradient(135deg, #00ff88, #00cc6a)';
+                multiplier.style.color = '#000';
+                multiplier.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.6)';
+                
+                if (value >= 2) {
+                    multiplier.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+                    multiplier.style.boxShadow = '0 0 15px rgba(255, 68, 68, 0.6)';
+                } else if (value >= 1) {
+                    multiplier.style.background = 'linear-gradient(135deg, #ffa726, #ff8f00)';
+                    multiplier.style.boxShadow = '0 0 15px rgba(255, 167, 38, 0.6)';
                 }
-                multiplier.textContent = value;
+                
+                multiplier.textContent = value + 'x';
                 multipliers.appendChild(multiplier);
             });
         }
@@ -1813,76 +1865,136 @@
         function animatePlinkoBall(ball, betAmount) {
             const board = document.getElementById('plinkoBoard');
             const boardRect = board.getBoundingClientRect();
-            const ballSize = 20;
+            const ballRadius = 8;
+            const boardWidth = 400;
+            const boardHeight = 500;
             
-            let x = boardRect.width / 2;
-            let y = 20;
-            let vx = (Math.random() - 0.5) * 2; // Random horizontal velocity
-            let vy = 0;
-            const gravity = 0.3;
-            const bounce = 0.7;
-            const friction = 0.98;
+            // Ball physics properties
+            let x = boardWidth / 2; // Start at center
+            let y = 20; // Start near top
+            let vx = (Math.random() - 0.5) * 1; // Small random horizontal velocity
+            let vy = 0; // Start with no vertical velocity
+            
+            // Physics constants (based on research)
+            const gravity = 0.4; // Realistic gravity acceleration
+            const restitution = 0.6; // Bounce energy retention (0.6 = 60% energy retained)
+            const airResistance = 0.999; // Air resistance
+            const minSpeed = 0.1; // Minimum speed before stopping
+            
+            // Collision detection variables
+            const collisionCooldown = 3; // Frames to wait before same peg collision
+            let lastCollisionPeg = -1;
+            let collisionCooldownCounter = 0;
             
             const animate = () => {
-                // Apply gravity
+                // Apply gravity (realistic acceleration)
                 vy += gravity;
+                
+                // Apply air resistance
+                vx *= airResistance;
+                vy *= airResistance;
                 
                 // Update position
                 x += vx;
                 y += vy;
                 
-                // Check peg collisions (simplified)
-                const pegRows = document.querySelectorAll('.peg-row');
-                pegRows.forEach((row, rowIndex) => {
-                    const pegs = row.querySelectorAll('.peg');
-                    pegs.forEach((peg, pegIndex) => {
-                        const pegRect = peg.getBoundingClientRect();
-                        const boardRect = board.getBoundingClientRect();
-                        const pegX = pegRect.left - boardRect.left + pegRect.width / 2;
-                        const pegY = pegRect.top - boardRect.top + pegRect.height / 2;
+                // Check collisions with pegs
+                if (window.plinkoPegs) {
+                    window.plinkoPegs.forEach((peg, pegIndex) => {
+                        // Skip if this peg was just hit (prevent multiple collisions)
+                        if (lastCollisionPeg === pegIndex && collisionCooldownCounter > 0) {
+                            collisionCooldownCounter--;
+                            return;
+                        }
                         
-                        const dx = x - pegX;
-                        const dy = y - pegY;
+                        const dx = x - peg.x;
+                        const dy = y - peg.y;
                         const distance = Math.sqrt(dx * dx + dy * dy);
+                        const collisionDistance = ballRadius + peg.radius;
                         
-                        if (distance < 15) { // Collision detected
-                            // Bounce off peg
-                            const angle = Math.atan2(dy, dx);
+                        if (distance < collisionDistance) {
+                            // Collision detected - calculate proper reflection
+                            const collisionAngle = Math.atan2(dy, dx);
                             const speed = Math.sqrt(vx * vx + vy * vy);
-                            vx = Math.cos(angle) * speed * bounce;
-                            vy = Math.sin(angle) * speed * bounce;
                             
-                            // Add some randomness
-                            vx += (Math.random() - 0.5) * 2;
+                            // Calculate reflection angle (perfect elastic collision)
+                            const incidentAngle = Math.atan2(vy, vx);
+                            const reflectionAngle = 2 * collisionAngle - incidentAngle;
+                            
+                            // Apply restitution (energy loss on bounce)
+                            const newSpeed = speed * restitution;
+                            
+                            // Update velocity with reflection
+                            vx = Math.cos(reflectionAngle) * newSpeed;
+                            vy = Math.sin(reflectionAngle) * newSpeed;
+                            
+                            // Add small random variation (realistic chaos)
+                            const randomVariation = 0.3;
+                            vx += (Math.random() - 0.5) * randomVariation;
+                            vy += (Math.random() - 0.5) * randomVariation;
+                            
+                            // Move ball away from peg to prevent sticking
+                            const overlap = collisionDistance - distance;
+                            const moveX = Math.cos(collisionAngle) * overlap;
+                            const moveY = Math.sin(collisionAngle) * overlap;
+                            x += moveX;
+                            y += moveY;
+                            
+                            // Set collision cooldown
+                            lastCollisionPeg = pegIndex;
+                            collisionCooldownCounter = collisionCooldown;
                         }
                     });
-                });
-                
-                // Apply friction
-                vx *= friction;
-                
-                // Check walls
-                if (x < ballSize / 2) {
-                    x = ballSize / 2;
-                    vx = Math.abs(vx) * bounce;
-                }
-                if (x > boardRect.width - ballSize / 2) {
-                    x = boardRect.width - ballSize / 2;
-                    vx = -Math.abs(vx) * bounce;
                 }
                 
-                // Update ball position
+                // Check wall collisions (elastic)
+                if (x < ballRadius) {
+                    x = ballRadius;
+                    vx = Math.abs(vx) * restitution;
+                }
+                if (x > boardWidth - ballRadius) {
+                    x = boardWidth - ballRadius;
+                    vx = -Math.abs(vx) * restitution;
+                }
+                
+                // Update ball position on screen
                 ball.style.left = x + 'px';
                 ball.style.top = y + 'px';
                 
-                // Check if ball reached bottom
-                if (y > boardRect.height - 100) {
-                    // Calculate final result based on x position
-                    const finalPosition = (x / boardRect.width) * 100;
-                    const result = calculatePlinkoResult(finalPosition);
+                // Check if ball reached bottom slots
+                if (y > boardHeight - 80) {
+                    // Calculate which slot the ball landed in
+                    const slotWidth = boardWidth / 9; // 9 slots
+                    const slotIndex = Math.floor(x / slotWidth);
+                    const slotIndexClamped = Math.max(0, Math.min(8, slotIndex));
+                    
+                    // Get multiplier for this slot
+                    const multipliers = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    const result = multipliers[slotIndexClamped];
+                    
                     showPlinkoResult(result, betAmount);
                     
                     // Reset
+                    setTimeout(() => {
+                        ball.style.display = 'none';
+                        document.getElementById('playButton').disabled = false;
+                        document.getElementById('playButton').textContent = 'Play';
+                    }, 3000);
+                    return;
+                }
+                
+                // Stop if ball is moving too slowly (prevent infinite loops)
+                const totalSpeed = Math.sqrt(vx * vx + vy * vy);
+                if (totalSpeed < minSpeed && y > boardHeight - 100) {
+                    // Force end if ball is stuck
+                    const slotWidth = boardWidth / 9;
+                    const slotIndex = Math.floor(x / slotWidth);
+                    const slotIndexClamped = Math.max(0, Math.min(8, slotIndex));
+                    const multipliers = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    const result = multipliers[slotIndexClamped];
+                    
+                    showPlinkoResult(result, betAmount);
+                    
                     setTimeout(() => {
                         ball.style.display = 'none';
                         document.getElementById('playButton').disabled = false;
