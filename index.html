@@ -1307,9 +1307,11 @@
                     <div class="control-group">
                         <label>Rows</label>
                         <select id="rowCount">
-                            <option value="8">8</option>
                             <option value="12">12</option>
+                            <option value="14">14</option>
                             <option value="16">16</option>
+                            <option value="18">18</option>
+                            <option value="20">20</option>
                         </select>
                     </div>
                     <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
@@ -1754,13 +1756,18 @@
             // Store peg positions for physics calculations
             window.plinkoPegs = [];
             
-            // Create proper triangular peg arrangement with realistic spacing
+            // Create large triangular peg arrangement to fill the entire game board
             const boardWidth = 400;
-            const pegRadius = 4;
-            const rowSpacing = 30; // Vertical spacing between rows
-            const startY = 50; // Starting Y position
+            const boardHeight = 400; // Full height of the game area
+            const pegRadius = 6; // Slightly larger pegs
+            const rowSpacing = 25; // Closer vertical spacing for more rows
+            const startY = 30; // Start closer to top
             
-            for (let row = 0; row < rowCount; row++) {
+            // Calculate how many rows we can fit
+            const maxRows = Math.floor((boardHeight - startY - 80) / rowSpacing); // Leave space for multipliers
+            const actualRows = Math.min(rowCount, maxRows);
+            
+            for (let row = 0; row < actualRows; row++) {
                 const pegRow = document.createElement('div');
                 pegRow.className = 'peg-row';
                 pegRow.style.position = 'absolute';
@@ -1771,25 +1778,26 @@
                 
                 // Calculate number of pegs in this row (triangular pattern)
                 const pegsInRow = row + 1;
-                const totalPegWidth = (pegsInRow - 1) * 25; // 25px horizontal spacing
+                const horizontalSpacing = 20; // Closer horizontal spacing
+                const totalPegWidth = (pegsInRow - 1) * horizontalSpacing;
                 const startX = (boardWidth - totalPegWidth) / 2; // Center the row
                 
                 for (let col = 0; col < pegsInRow; col++) {
                     const peg = document.createElement('div');
                     peg.className = 'peg';
                     peg.style.position = 'absolute';
-                    peg.style.left = (startX + col * 25) + 'px';
-                    peg.style.top = '-4px'; // Center vertically on the row
+                    peg.style.left = (startX + col * horizontalSpacing) + 'px';
+                    peg.style.top = '-6px'; // Center vertically on the row
                     peg.style.width = (pegRadius * 2) + 'px';
                     peg.style.height = (pegRadius * 2) + 'px';
                     peg.style.borderRadius = '50%';
                     peg.style.background = '#fff';
-                    peg.style.boxShadow = '0 0 8px rgba(255, 255, 255, 0.8)';
+                    peg.style.boxShadow = '0 0 12px rgba(255, 255, 255, 0.9)';
                     peg.style.zIndex = '10';
                     
                     // Store peg position for physics
                     window.plinkoPegs.push({
-                        x: startX + col * 25 + pegRadius,
+                        x: startX + col * horizontalSpacing + pegRadius,
                         y: startY + row * rowSpacing,
                         radius: pegRadius
                     });
@@ -1800,32 +1808,44 @@
                 pegsContainer.appendChild(pegRow);
             }
             
-            // Create multipliers with proper slot positioning
+            // Create multipliers at the BOTTOM with proper slot positioning
             const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
             const slotWidth = boardWidth / multiplierValues.length;
+            const multiplierY = boardHeight - 60; // Position at bottom
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
                 multiplier.className = 'multiplier';
                 multiplier.style.position = 'absolute';
-                multiplier.style.left = (index * slotWidth + slotWidth/2 - 25) + 'px';
-                multiplier.style.top = '0px';
-                multiplier.style.width = '50px';
+                multiplier.style.left = (index * slotWidth + slotWidth/2 - 30) + 'px';
+                multiplier.style.top = multiplierY + 'px';
+                multiplier.style.width = '60px';
+                multiplier.style.height = '40px';
                 multiplier.style.textAlign = 'center';
-                multiplier.style.fontSize = '0.9rem';
+                multiplier.style.fontSize = '1rem';
                 multiplier.style.fontWeight = 'bold';
                 multiplier.style.padding = '8px 4px';
-                multiplier.style.borderRadius = '8px';
+                multiplier.style.borderRadius = '10px';
+                multiplier.style.display = 'flex';
+                multiplier.style.alignItems = 'center';
+                multiplier.style.justifyContent = 'center';
                 multiplier.style.background = 'linear-gradient(135deg, #00ff88, #00cc6a)';
                 multiplier.style.color = '#000';
-                multiplier.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.6)';
+                multiplier.style.boxShadow = '0 0 20px rgba(0, 255, 136, 0.8)';
+                multiplier.style.border = '2px solid #00ff88';
                 
                 if (value >= 2) {
                     multiplier.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-                    multiplier.style.boxShadow = '0 0 15px rgba(255, 68, 68, 0.6)';
+                    multiplier.style.boxShadow = '0 0 20px rgba(255, 68, 68, 0.8)';
+                    multiplier.style.border = '2px solid #ff4444';
                 } else if (value >= 1) {
                     multiplier.style.background = 'linear-gradient(135deg, #ffa726, #ff8f00)';
-                    multiplier.style.boxShadow = '0 0 15px rgba(255, 167, 38, 0.6)';
+                    multiplier.style.boxShadow = '0 0 20px rgba(255, 167, 38, 0.8)';
+                    multiplier.style.border = '2px solid #ffa726';
+                } else {
+                    multiplier.style.background = 'linear-gradient(135deg, #66bb6a, #4caf50)';
+                    multiplier.style.boxShadow = '0 0 20px rgba(102, 187, 106, 0.8)';
+                    multiplier.style.border = '2px solid #66bb6a';
                 }
                 
                 multiplier.textContent = value + 'x';
@@ -1867,7 +1887,7 @@
             const boardRect = board.getBoundingClientRect();
             const ballRadius = 8;
             const boardWidth = 400;
-            const boardHeight = 500;
+            const boardHeight = 400; // Match the new board height
             
             // Ball physics properties
             let x = boardWidth / 2; // Start at center
@@ -1961,8 +1981,8 @@
                 ball.style.left = x + 'px';
                 ball.style.top = y + 'px';
                 
-                // Check if ball reached bottom slots
-                if (y > boardHeight - 80) {
+                // Check if ball reached bottom slots (multipliers are now at bottom)
+                if (y > boardHeight - 50) { // Adjusted for bottom multipliers
                     // Calculate which slot the ball landed in
                     const slotWidth = boardWidth / 9; // 9 slots
                     const slotIndex = Math.floor(x / slotWidth);
@@ -1985,7 +2005,7 @@
                 
                 // Stop if ball is moving too slowly (prevent infinite loops)
                 const totalSpeed = Math.sqrt(vx * vx + vy * vy);
-                if (totalSpeed < minSpeed && y > boardHeight - 100) {
+                if (totalSpeed < minSpeed && y > boardHeight - 80) {
                     // Force end if ball is stuck
                     const slotWidth = boardWidth / 9;
                     const slotIndex = Math.floor(x / slotWidth);
