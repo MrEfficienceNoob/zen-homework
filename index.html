@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* Welcome Page */
+        .welcome-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #000 0%, #1a0a2e 50%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .welcome-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .welcome-page.hidden {
+            opacity: 0;
+            transform: translateY(-30px);
+            pointer-events: none;
+        }
+        
+        .title {
+            font-size: 4rem;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: 0.3em;
+            margin-bottom: 50px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        .play-button {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+        }
+        
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .play-button:hover::before {
+            left: 100%;
+        }
+        
+        .play-button:hover {
+            background: linear-gradient(135deg, #8b5cf6, rgba(139, 92, 246, 0.8));
+            color: #000;
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.4);
+            transform: translateY(-8px) scale(1.08);
+            border-color: #fff;
+        }
+        
+        .play-button:active {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6);
+        }
+        
+        .play-button.clicking {
+            animation: buttonPulse 0.6s ease-out;
+        }
+        
+        @keyframes buttonPulse {
+            0% { transform: translateY(-8px) scale(1.08); }
+            50% { transform: translateY(-4px) scale(1.12); }
+            100% { transform: translateY(-8px) scale(1.08); }
+        }
+        
+        /* Category Selection Page */
+        .category-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #000 0%, #1a0a2e 50%, #000 100%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+        }
+        
+        .category-page.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .category-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .category-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: 0.2em;
+            margin-bottom: 60px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .category-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .gamba-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .category-button {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+            padding: 25px 50px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+        }
+        
+        .category-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .category-button:hover::before {
+            left: 100%;
+        }
+        
+        .category-button:hover {
+            background: linear-gradient(135deg, #8b5cf6, rgba(139, 92, 246, 0.8));
+            color: #000;
+            box-shadow: 0 15px 50px rgba(139, 92, 246, 0.4);
+            transform: translateY(-8px) scale(1.08);
+            border-color: #fff;
+        }
+        
+        .category-button:active {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.6);
+        }
+        
+        /* Gamba Button Special Effects */
+        .gamba-button {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: 3px solid #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5), 0 0 60px rgba(0, 255, 136, 0.3);
+            animation: gambaGlow 2s ease-in-out infinite;
+        }
+        
+        .gamba-button:hover {
+            background: linear-gradient(135deg, #00ff88, #00ffaa);
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.8), 0 0 100px rgba(0, 255, 136, 0.5);
+            transform: translateY(-12px) scale(1.12);
+        }
+        
+        .gamba-button:active {
+            transform: translateY(-6px) scale(1.08);
+        }
+        
+        @keyframes gambaGlow {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.5), 0 0 60px rgba(0, 255, 136, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(0, 255, 136, 0.8), 0 0 100px rgba(0, 255, 136, 0.5);
+            }
+        }
+        
+        
+        /* Dollar Sign Jumping Effect */
+        .dollar-jump {
+            position: fixed;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+            pointer-events: none;
+            z-index: 1000;
+            animation: dollarJump 2s ease-out forwards;
+        }
+        
+        @keyframes dollarJump {
+            0% {
+                transform: translateY(0px) scale(1) rotate(var(--random-rotation, 0deg));
+                opacity: 1;
+            }
+            20% {
+                transform: translateY(-40px) scale(1.3) rotate(calc(var(--random-rotation, 0deg) + 180deg));
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(120px) scale(0.6) rotate(calc(var(--random-rotation, 0deg) + 360deg));
+                opacity: 0;
+            }
+        }
+        
+        /* Slot Machine */
+        .slot-machine {
+            width: 100%;
+            max-width: 300px;
+            height: 60px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border: 3px solid #00ff88;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .slot-machine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 136, 0.1) 50%, transparent 100%);
+            animation: slotShimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes slotShimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        .slot-reels {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        
+        .slot-reel {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #000, #333);
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slot-reel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 136, 0.2) 50%, transparent 100%);
+            animation: reelGlow 0.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes reelGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+        
+        .slot-reel.spinning {
+            animation: reelSpin 0.1s linear infinite;
+        }
+        
+        @keyframes reelSpin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50px); }
+        }
+        
+        .slot-reel.winning {
+            animation: reelWin 0.5s ease-out;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            box-shadow: 0 0 20px #00ff88;
+        }
+        
+        @keyframes reelWin {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Gamba Library Theme */
+        .game-library.gamba-theme {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 30%, #16213e 70%, #0a0a0a 100%);
+        }
+        
+        .game-library.gamba-theme::before {
+            background: radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+        }
+        
+        .game-library.gamba-theme .library-header h1 {
+            color: #00ff88;
+            text-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88;
+        }
+        
+        .game-library.gamba-theme .library-header p {
+            color: #00ff88;
+        }
+        
+        .game-library.gamba-theme .back-button {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .game-library.gamba-theme .back-button:hover {
+            background: linear-gradient(135deg, #00ff88, #00ffaa);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .game-library.gamba-theme .game-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            border: 2px solid #00ff88;
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+        }
+        
+        .game-library.gamba-theme .game-card:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+            border-color: #00ffaa;
+            box-shadow: 0 15px 50px rgba(0, 255, 136, 0.4);
+            transform: translateY(-8px) scale(1.05);
+        }
+        
+        .game-library.gamba-theme .game-icon {
+            font-size: 3rem;
+            text-shadow: 0 0 20px #00ff88;
+        }
+        
+        .game-library.gamba-theme .game-title {
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        
+        .game-library.gamba-theme .game-description {
+            color: #a0ffa0;
+        }
+        
+        .game-library.gamba-theme .game-status {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: #fff;
+            border: 2px solid #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .game-library.gamba-theme .scrollbar {
+            background: linear-gradient(180deg, #00ff88, #00cc6a);
+        }
+        
+        .game-library.gamba-theme .scrollbar-thumb {
+            background: linear-gradient(180deg, #00ff88, #00cc6a);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        /* Game Library Page */
+        .game-library {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #000 0%, #1a0a2e 50%, #000 100%);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+        }
+        
+        .game-library.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .game-library::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .library-header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .library-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #8b5cf6;
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+        }
+        
+        .library-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: transparent;
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .back-button:hover {
+            background: #8b5cf6;
+            color: #000;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+        }
+        
+        .games-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            scroll-behavior: smooth;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+        
+        .game-card {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .game-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .game-card:hover {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: #8b5cf6;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+            border-radius: 25px;
+        }
+        
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .game-card:hover .game-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .game-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b5cf6;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+        }
+        
+        .game-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .game-status {
+            color: #8b5cf6;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Enhanced Particle System */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        }
+        
+        .particle:hover {
+            background: #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
+            transform: scale(2);
+        }
+        
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: #fff;
+            opacity: 0.6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+        }
+        
+        .connection-line.active {
+            opacity: 0.8;
+        }
+        
+        .connection-line.fade-out {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        /* Enhanced smooth scrolling */
+        .games-container {
+            scrollbar-width: thin;
+            scrollbar-color: #8b5cf6 rgba(139, 92, 246, 0.1);
+        }
+        
+        .games-container::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .games-container::-webkit-scrollbar-track {
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+        }
+        
+        .games-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b5cf6, rgba(139, 92, 246, 0.8));
+            border-radius: 10px;
+            border: 2px solid rgba(139, 92, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .games-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #8b5cf6, #8b5cf6);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        
+        .games-container::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+            }
+            
+            .library-title {
+                font-size: 2rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .games-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Page -->
+    <div class="welcome-page" id="welcomePage">
+        <h1 class="title">Zen</h1>
+        <button class="play-button" onclick="openCategorySelection()">Play</button>
+    </div>
+    
+    <!-- Enhanced Particle System -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Category Selection Page -->
+    <div class="category-page" id="categoryPage">
+        <h1 class="category-title">Pick a Category</h1>
+        <div class="category-buttons">
+            <button class="category-button" onclick="openGameLibrary()">Normal Games</button>
+            <div class="gamba-section">
+                <button class="category-button gamba-button" onclick="openGambaLibrary()">Gamba 💰</button>
+                <div class="slot-machine">
+                    <div class="slot-reels">
+                        <div class="slot-reel" id="reel1">7</div>
+                        <div class="slot-reel" id="reel2">7</div>
+                        <div class="slot-reel" id="reel3">7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Library Page -->
+    <div class="game-library" id="gameLibrary">
+        <div class="library-header">
+            <button class="back-button" onclick="closeGameLibrary()">← Back</button>
+            <h1 class="library-title">Game Library</h1>
+            <p class="library-subtitle">Choose your adventure</p>
+        </div>
+
+        <div class="games-container">
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Particle System with Hover-Based Connections
+        class EnhancedParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.connections = [];
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.connectionDistance = 120;
+                this.maxConnections = 8;
+                this.animationId = null;
+                this.init();
+            }
+            
+            init() {
+                this.createParticles();
+                this.bindEvents();
+                this.animate();
+            }
+            
+            createParticles() {
+                const container = document.getElementById('particles');
+                const particleCount = 80;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    const x = Math.random() * window.innerWidth;
+                    const y = Math.random() * window.innerHeight;
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    container.appendChild(particle);
+                    
+                    this.particles.push({
+                        element: particle,
+                        x: x,
+                        y: y,
+                        vx: (Math.random() - 0.5) * 0.8,
+                        vy: (Math.random() - 0.5) * 0.8,
+                        originalSize: Math.random() * 2 + 1,
+                        lastX: x,
+                        lastY: y
+                    });
+                }
+            }
+            
+            bindEvents() {
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+                
+                window.addEventListener('resize', () => {
+                    this.particles.forEach(particle => {
+                        if (particle.x > window.innerWidth) particle.x = window.innerWidth;
+                        if (particle.y > window.innerHeight) particle.y = window.innerHeight;
+                    });
+                });
+            }
+            
+            updateConnections() {
+                // Clear existing connections
+                this.connections.forEach(connection => {
+                    if (connection.element.parentNode) {
+                        connection.element.parentNode.removeChild(connection.element);
+                    }
+                });
+                this.connections = [];
+                
+                // Find particles within mouse radius
+                const nearbyParticles = this.particles.filter(particle => {
+                    const dx = particle.x - this.mouseX;
+                    const dy = particle.y - this.mouseY;
+                    return Math.sqrt(dx * dx + dy * dy) < this.connectionDistance;
+                }).slice(0, this.maxConnections);
+                
+                // Create connections between nearby particles
+                for (let i = 0; i < nearbyParticles.length; i++) {
+                    for (let j = i + 1; j < nearbyParticles.length; j++) {
+                        this.createConnection(nearbyParticles[i], nearbyParticles[j]);
+                    }
+                }
+            }
+            
+            createConnection(particle1, particle2) {
+                const line = document.createElement('div');
+                line.className = 'connection-line active';
+                
+                // Store reference to particles for syncing
+                line.particle1 = particle1;
+                line.particle2 = particle2;
+                
+                this.updateConnectionPosition(line);
+                document.getElementById('particles').appendChild(line);
+                this.connections.push({ element: line });
+            }
+            
+            updateConnectionPosition(line) {
+                const particle1 = line.particle1;
+                const particle2 = line.particle2;
+                
+                const dx = particle2.x - particle1.x;
+                const dy = particle2.y - particle1.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                line.style.left = particle1.x + 'px';
+                line.style.top = particle1.y + 'px';
+                line.style.width = distance + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.transformOrigin = '0 50%';
+            }
+            
+            animate() {
+                // Update particle positions
+                this.particles.forEach(particle => {
+                    // Store previous position
+                    particle.lastX = particle.x;
+                    particle.lastY = particle.y;
+                    
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    // Smooth boundary bouncing
+                    if (particle.x < 0 || particle.x > window.innerWidth) {
+                        particle.vx *= -1;
+                        particle.x = Math.max(0, Math.min(window.innerWidth, particle.x));
+                    }
+                    if (particle.y < 0 || particle.y > window.innerHeight) {
+                        particle.vy *= -1;
+                        particle.y = Math.max(0, Math.min(window.innerHeight, particle.y));
+                    }
+                    
+                    // Update particle element position
+                    particle.element.style.left = particle.x + 'px';
+                    particle.element.style.top = particle.y + 'px';
+                    
+                    // Subtle size variation
+                    const sizeVariation = Math.sin(Date.now() * 0.001 + particle.x * 0.01) * 0.5 + 1;
+                    particle.element.style.transform = `scale(${sizeVariation})`;
+                });
+                
+                // Update all connection lines to sync perfectly with particles
+                this.connections.forEach(connection => {
+                    this.updateConnectionPosition(connection.element);
+                });
+                
+                // Update connections based on mouse position
+                this.updateConnections();
+                
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            destroy() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+            }
+        }
+        
+        // Game Library Data
+        const gameLibrary = [
+            {
+                id: 'game-1',
+                title: 'Neon Racer',
+                description: 'High-speed racing through neon-lit cyberpunk environments with smooth, fluid animations.',
+                icon: '🏎️',
+                status: 'Under Maintenance',
+                category: 'Racing'
+            },
+            {
+                id: 'game-2',
+                title: 'Cosmic Explorer',
+                description: 'Explore the vast universe, discovering new planets and celestial phenomena in this space adventure.',
+                icon: '🌌',
+                status: 'Under Maintenance',
+                category: 'Adventure'
+            },
+            {
+                id: 'game-3',
+                title: 'Particle Dance',
+                description: 'Interactive particle system where you create beautiful patterns and connections with your mouse movements.',
+                icon: '✨',
+                status: 'Under Maintenance',
+                category: 'Interactive'
+            },
+            {
+                id: 'game-4',
+                title: 'Zen Driver',
+                description: 'Endless driving through serene landscapes. Find your inner peace while cruising through beautiful environments.',
+                icon: '🚗',
+                status: 'Under Maintenance',
+                category: 'Relaxation'
+            },
+            {
+                id: 'game-5',
+                title: 'Minimalist Puzzle',
+                description: 'Clean, elegant puzzle game with smooth animations and zen-like gameplay mechanics.',
+                icon: '🧩',
+                status: 'Under Maintenance',
+                category: 'Puzzle'
+            },
+            {
+                id: 'game-6',
+                title: 'Italian Brainrot Clicker',
+                description: 'Tap your way through the viral Italian Brainrot universe, unlocking all the brainrot characters and upgrades.',
+                icon: '🧠',
+                status: 'Under Maintenance',
+                category: 'Clicker'
+            },
+            {
+                id: 'game-7',
+                title: 'Cyberpunk Shooter',
+                description: 'Futuristic first-person shooter set in a dystopian cyberpunk world with stunning visuals.',
+                icon: '🔫',
+                status: 'Under Maintenance',
+                category: 'FPS'
+            },
+            {
+                id: 'game-8',
+                title: 'Mystic Quest',
+                description: 'Embark on an epic fantasy adventure through magical realms and ancient dungeons.',
+                icon: '⚔️',
+                status: 'Under Maintenance',
+                category: 'RPG'
+            },
+            {
+                id: 'game-9',
+                title: 'Retro Platformer',
+                description: 'Classic side-scrolling platformer with modern graphics and nostalgic gameplay.',
+                icon: '🦘',
+                status: 'Under Maintenance',
+                category: 'Platformer'
+            }
+        ];
+        
+        // UI Functions
+        function openCategorySelection() {
+            const welcomePage = document.getElementById('welcomePage');
+            const categoryPage = document.getElementById('categoryPage');
+            const playButton = document.querySelector('.play-button');
+            
+            // Add clicking animation to button
+            playButton.classList.add('clicking');
+            
+            // Add particle burst effect
+            createParticleBurst();
+            
+            // Start transition
+            setTimeout(() => {
+                welcomePage.classList.add('hidden');
+            }, 300);
+            
+            setTimeout(() => {
+                categoryPage.classList.add('active');
+            }, 800);
+        }
+        
+        function openGameLibrary() {
+            const categoryPage = document.getElementById('categoryPage');
+            const gameLibrary = document.getElementById('gameLibrary');
+            
+            // Stop dollar sign effect
+            stopDollarJumpEffect();
+            
+            categoryPage.classList.remove('active');
+            
+            setTimeout(() => {
+                gameLibrary.classList.add('active');
+                populateGameLibrary();
+                animateGameCards();
+            }, 400);
+        }
+        
+        function openGambaLibrary() {
+            const categoryPage = document.getElementById('categoryPage');
+            const gameLibrary = document.getElementById('gameLibrary');
+            
+            // Stop dollar sign effect
+            stopDollarJumpEffect();
+            
+            // Create green particles effect
+            createGreenParticles();
+            
+            categoryPage.classList.remove('active');
+            
+            setTimeout(() => {
+                gameLibrary.classList.add('active', 'gamba-theme');
+                populateGambaLibrary();
+                animateGameCards();
+            }, 400);
+        }
+        
+        function createGreenParticles() {
+            const button = document.querySelector('.gamba-button');
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.width = '6px';
+                particle.style.height = '6px';
+                particle.style.backgroundColor = '#00ff88';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '9999';
+                particle.style.boxShadow = '0 0 10px #00ff88, 0 0 20px #00ff88';
+                
+                document.body.appendChild(particle);
+                
+                const angle = (Math.PI * 2 * i) / 20;
+                const velocity = 200 + Math.random() * 150; // Faster speed
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                let x = 0;
+                let y = 0;
+                let opacity = 1;
+                let scale = 1;
+                
+                const animate = () => {
+                    x += vx * 0.016;
+                    y += vy * 0.016;
+                    opacity -= 0.03; // Faster fade
+                    scale -= 0.02;
+                    
+                    particle.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0 && scale > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        function createParticleBurst() {
+            const button = document.querySelector('.play-button');
+            const rect = button.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.background = '#8b5cf6';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '9999';
+                particle.style.boxShadow = '0 0 10px #8b5cf6';
+                
+                document.body.appendChild(particle);
+                
+                const angle = (Math.PI * 2 * i) / 20;
+                const velocity = 100 + Math.random() * 50;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                let x = 0;
+                let y = 0;
+                let opacity = 1;
+                
+                const animate = () => {
+                    x += vx * 0.016;
+                    y += vy * 0.016;
+                    opacity -= 0.02;
+                    
+                    particle.style.transform = `translate(${x}px, ${y}px)`;
+                    particle.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        function closeGameLibrary() {
+            const categoryPage = document.getElementById('categoryPage');
+            const gameLibrary = document.getElementById('gameLibrary');
+            
+            gameLibrary.classList.remove('active', 'gamba-theme');
+            
+            setTimeout(() => {
+                categoryPage.classList.add('active');
+            }, 400);
+        }
+        
+        // Gambling Games Library Data
+        const gambaLibrary = [
+            {
+                id: 'gamba-1',
+                title: 'Lucky Slots',
+                description: 'Spin the reels and win big with our classic slot machine game. All winnings are in-game currency only!',
+                icon: '🎰',
+                status: 'Under Maintenance',
+                category: 'Slots'
+            },
+            {
+                id: 'gamba-2',
+                title: 'Poker Palace',
+                description: 'Test your poker skills in our virtual casino. Play against AI opponents with virtual chips.',
+                icon: '🃏',
+                status: 'Under Maintenance',
+                category: 'Card Games'
+            },
+            {
+                id: 'gamba-3',
+                title: 'Roulette Royale',
+                description: 'Place your bets on red, black, or numbers in this classic roulette game with virtual currency.',
+                icon: '🎲',
+                status: 'Under Maintenance',
+                category: 'Table Games'
+            },
+            {
+                id: 'gamba-4',
+                title: 'Blackjack Blitz',
+                description: 'Beat the dealer in this fast-paced blackjack game. Perfect for quick gaming sessions.',
+                icon: '🂡',
+                status: 'Under Maintenance',
+                category: 'Card Games'
+            },
+            {
+                id: 'gamba-5',
+                title: 'Bingo Bonanza',
+                description: 'Join the bingo hall and mark your numbers for a chance to win virtual prizes!',
+                icon: '🎯',
+                status: 'Under Maintenance',
+                category: 'Bingo'
+            },
+            {
+                id: 'gamba-6',
+                title: 'Dice Dreams',
+                description: 'Roll the dice and watch your virtual fortune grow in this exciting dice game.',
+                icon: '🎲',
+                status: 'Under Maintenance',
+                category: 'Dice Games'
+            },
+            {
+                id: 'gamba-7',
+                title: 'Lottery Lotto',
+                description: 'Pick your lucky numbers and see if you can win the virtual jackpot!',
+                icon: '🎫',
+                status: 'Under Maintenance',
+                category: 'Lottery'
+            },
+            {
+                id: 'gamba-8',
+                title: 'Scratch & Win',
+                description: 'Scratch off virtual tickets to reveal instant prizes and bonus rewards.',
+                icon: '🎟️',
+                status: 'Under Maintenance',
+                category: 'Instant Win'
+            },
+            {
+                id: 'gamba-9',
+                title: 'Wheel of Fortune',
+                description: 'Spin the wheel and land on virtual prizes in this exciting game of chance.',
+                icon: '🎡',
+                status: 'Under Maintenance',
+                category: 'Wheel Games'
+            }
+        ];
+        
+        function populateGambaLibrary() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            const libraryTitle = document.querySelector('.library-header h1');
+            const librarySubtitle = document.querySelector('.library-header p');
+            
+            // Update header for Gamba library
+            libraryTitle.textContent = '🎰 Gamba Games 🎰';
+            librarySubtitle.textContent = 'Ethical gambling games with in-game currency only';
+            
+            gamesGrid.innerHTML = '';
+            
+            gambaLibrary.forEach((game, index) => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.style.transitionDelay = `${index * 0.1}s`;
+                
+                gameCard.innerHTML = `
+                    <div class="game-icon">${game.icon}</div>
+                    <h3 class="game-title">${game.title}</h3>
+                    <p class="game-description">${game.description}</p>
+                    <div class="game-status">${game.status}</div>
+                `;
+                
+                gameCard.addEventListener('click', () => {
+                    if (game.status === 'Under Maintenance') {
+                        alert('This game is currently under maintenance. Please check back later!');
+                    }
+                });
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+        
+        function populateGameLibrary() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            const libraryTitle = document.querySelector('.library-header h1');
+            const librarySubtitle = document.querySelector('.library-header p');
+            
+            // Reset header for normal games
+            libraryTitle.textContent = 'Game Library';
+            librarySubtitle.textContent = 'Choose from our collection of games';
+            
+            gamesGrid.innerHTML = '';
+            
+            gameLibrary.forEach((game, index) => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.style.transitionDelay = `${index * 0.1}s`;
+                
+                gameCard.innerHTML = `
+                    <div class="game-icon">${game.icon}</div>
+                    <h3 class="game-title">${game.title}</h3>
+                    <p class="game-description">${game.description}</p>
+                    <div class="game-status">${game.status}</div>
+                `;
+                
+                gameCard.addEventListener('click', () => {
+                    if (game.status === 'Available') {
+                        launchGame(game.id);
+                    }
+                });
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+        
+        function animateGameCards() {
+            const gameCards = document.querySelectorAll('.game-card');
+            gameCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-in');
+                }, index * 100);
+            });
+        }
+        
+        function launchGame(gameId) {
+            // Add launch animation
+            const gameCard = document.querySelector(`[onclick="launchGame('${gameId}')"]`);
+            if (gameCard) {
+                gameCard.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    gameCard.style.transform = 'scale(1)';
+                }, 150);
+            }
+            
+            // Show maintenance message
+            alert('This game is currently under maintenance. Please check back later!');
+        }
+
+        // Dollar Sign Jumping Effect
+        let dollarSignInterval = null;
+        
+        function startDollarJumpEffect() {
+            const gambaButton = document.querySelector('.gamba-button');
+            if (!gambaButton) return;
+            
+            const createDollarSigns = () => {
+                const rect = gambaButton.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                // Create 4-5 dollar signs
+                const numDollarSigns = 4 + Math.floor(Math.random() * 2); // 4 or 5
+                
+                for (let i = 0; i < numDollarSigns; i++) {
+                    const dollarSign = document.createElement('div');
+                    dollarSign.className = 'dollar-jump';
+                    dollarSign.textContent = '$';
+                    
+                    // Random position within button area
+                    const randomX = rect.left + Math.random() * rect.width;
+                    const randomY = rect.top + Math.random() * rect.height;
+                    
+                    dollarSign.style.left = randomX + 'px';
+                    dollarSign.style.top = randomY + 'px';
+                    
+                    // Random rotation for each dollar sign
+                    const randomRotation = Math.random() * 360;
+                    dollarSign.style.setProperty('--random-rotation', randomRotation + 'deg');
+                    
+                    // Add slight delay for each dollar sign
+                    dollarSign.style.animationDelay = (i * 0.1) + 's';
+                    
+                    document.body.appendChild(dollarSign);
+                    
+                    // Remove the element after animation
+                    setTimeout(() => {
+                        if (dollarSign.parentNode) {
+                            dollarSign.parentNode.removeChild(dollarSign);
+                        }
+                    }, 2000 + (i * 100));
+                }
+            };
+            
+            // Create first batch of dollar signs immediately
+            createDollarSigns();
+            
+            // Continue creating dollar signs every 2.1 seconds (right after they disappear)
+            dollarSignInterval = setInterval(() => {
+                if (document.querySelector('.gamba-button')) {
+                    createDollarSigns();
+                } else {
+                    clearInterval(dollarSignInterval);
+                }
+            }, 2100);
+        }
+        
+        function stopDollarJumpEffect() {
+            if (dollarSignInterval) {
+                clearInterval(dollarSignInterval);
+                dollarSignInterval = null;
+            }
+        }
+        
+        // Slot Machine Animation
+        function startSlotMachine() {
+            const reels = ['reel1', 'reel2', 'reel3'];
+            const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            
+            const spinReel = (reelId, delay) => {
+                const reel = document.getElementById(reelId);
+                reel.classList.add('spinning');
+                
+                // Show random numbers while spinning
+                const spinInterval = setInterval(() => {
+                    reel.textContent = numbers[Math.floor(Math.random() * numbers.length)];
+                }, 100);
+                
+                // Stop spinning after delay and show 7
+                setTimeout(() => {
+                    clearInterval(spinInterval);
+                    reel.classList.remove('spinning');
+                    reel.textContent = '7';
+                    reel.classList.add('winning');
+                    
+                    // Remove winning class after animation
+                    setTimeout(() => {
+                        reel.classList.remove('winning');
+                    }, 500);
+                }, delay);
+            };
+            
+            // Start spinning with staggered delays
+            spinReel('reel1', 1000);
+            spinReel('reel2', 1500);
+            spinReel('reel3', 2000);
+            
+            // Loop the animation
+            setTimeout(() => {
+                startSlotMachine();
+            }, 4000);
+        }
+        
+        // Initialize
+        new EnhancedParticleSystem();
+        
+        // Start dollar jump effect and slot machine when category page becomes active
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const categoryPage = document.getElementById('categoryPage');
+                    if (categoryPage && categoryPage.classList.contains('active')) {
+                        startDollarJumpEffect();
+                        startSlotMachine();
+                    }
+                }
+            });
+        });
+        
+        const categoryPage = document.getElementById('categoryPage');
+        if (categoryPage) {
+            observer.observe(categoryPage, { attributes: true, attributeFilter: ['class'] });
+        }
+    </script>
+</body>
+</html>

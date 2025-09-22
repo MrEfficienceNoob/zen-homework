@@ -1,0 +1,27 @@
+{
+  "name": "zen-game-platform",
+  "version": "1.0.0",
+  "description": "A modern, interactive game platform with particle effects and casino themes",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python server.py",
+    "start": "python server.py",
+    "build": "echo 'No build step required for static site'",
+    "vercel-build": "echo 'No build step required for static site'"
+  },
+  "keywords": [
+    "games",
+    "casino",
+    "particles",
+    "interactive",
+    "zen",
+    "gamba"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/zen-game-platform.git"
+  },
+  "homepage": "https://zen-game-platform.vercel.app"
+}
