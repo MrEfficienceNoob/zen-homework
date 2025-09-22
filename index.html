@@ -736,6 +736,7 @@
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 15px;
+            cursor: pointer;
         }
         
         .plinko-preview .pegs-container {
@@ -744,86 +745,125 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            gap: 8px;
+            gap: 6px;
+            padding: 10px 0;
         }
         
         .plinko-preview .peg-row {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             justify-content: center;
         }
         
         .plinko-preview .peg {
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
             background: #00ff88;
             border-radius: 50%;
-            box-shadow: 0 0 3px #00ff88;
+            box-shadow: 0 0 4px #00ff88;
         }
         
         .plinko-preview .ball {
-            width: 8px;
-            height: 8px;
-            background: #fff;
+            width: 6px;
+            height: 6px;
+            background: #ff6b6b;
             border-radius: 50%;
             position: absolute;
-            top: 10px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 6px rgba(255, 107, 107, 0.8);
             z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .plinko-preview .multipliers {
             position: absolute;
-            bottom: 5px;
+            bottom: 8px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 5px;
+            gap: 3px;
         }
         
         .plinko-preview .multiplier {
             background: #00ff88;
             color: #000;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.6rem;
             font-weight: bold;
-            min-width: 25px;
+            min-width: 20px;
             text-align: center;
+        }
+        
+        .plinko-preview:hover .ball {
+            opacity: 1;
+            animation: plinkoDrop 2s ease-in-out infinite;
+        }
+        
+        .plinko-preview:hover .money-particle {
+            animation: moneyParticle 1s ease-out infinite;
+        }
+        
+        .money-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 15;
         }
         
         @keyframes plinkoDrop {
             0% {
-                top: 10px;
+                top: 15px;
                 left: 50%;
                 transform: translateX(-50%);
             }
-            25% {
-                top: 30px;
+            20% {
+                top: 25px;
                 left: 45%;
                 transform: translateX(-50%);
             }
-            50% {
-                top: 50px;
+            40% {
+                top: 40px;
                 left: 55%;
                 transform: translateX(-50%);
             }
-            75% {
-                top: 70px;
+            60% {
+                top: 55px;
                 left: 48%;
                 transform: translateX(-50%);
             }
-            100% {
-                top: 85px;
+            80% {
+                top: 70px;
                 left: 52%;
+                transform: translateX(-50%);
+            }
+            100% {
+                top: 80px;
+                left: 50%;
                 transform: translateX(-50%);
             }
         }
         
-        .plinko-preview .ball.animating {
-            animation: plinkoDrop 2s ease-in-out infinite;
+        @keyframes moneyParticle {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(0);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1) translateY(-10px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-20px);
+            }
         }
         
         /* Plinko Game Modal */
@@ -2246,18 +2286,20 @@
                 let iconHTML = '';
                 if (game.id === 'gamba-1') {
                     iconHTML = `
-                        <div class="plinko-preview">
+                        <div class="plinko-preview" onmouseenter="startPlinkoPreview()" onmouseleave="stopPlinkoPreview()">
                             <div class="pegs-container" id="plinkoPreviewPegs">
                                 <div class="peg-row"><div class="peg"></div></div>
                                 <div class="peg-row"><div class="peg"></div><div class="peg"></div></div>
                                 <div class="peg-row"><div class="peg"></div><div class="peg"></div><div class="peg"></div></div>
                                 <div class="peg-row"><div class="peg"></div><div class="peg"></div><div class="peg"></div><div class="peg"></div></div>
+                                <div class="peg-row"><div class="peg"></div><div class="peg"></div><div class="peg"></div><div class="peg"></div><div class="peg"></div></div>
                             </div>
-                            <div class="ball animating"></div>
+                            <div class="ball"></div>
                             <div class="multipliers">
                                 <div class="multiplier">5.6x</div>
                                 <div class="multiplier">2.1x</div>
                                 <div class="multiplier">1.1x</div>
+                                <div class="multiplier">1x</div>
                                 <div class="multiplier">0.5x</div>
                             </div>
                         </div>
@@ -2345,6 +2387,7 @@
 
         // Dollar Sign Jumping Effect
         let dollarSignInterval = null;
+        let plinkoPreviewInterval = null;
         
         function startDollarJumpEffect() {
             const gambaButton = document.querySelector('.gamba-button');
@@ -2466,6 +2509,74 @@
         const categoryPage = document.getElementById('categoryPage');
         if (categoryPage) {
             observer.observe(categoryPage, { attributes: true, attributeFilter: ['class'] });
+        }
+        
+        // Plinko Preview Functions
+        function startPlinkoPreview() {
+            const preview = document.querySelector('.plinko-preview');
+            if (!preview) return;
+            
+            const ball = preview.querySelector('.ball');
+            if (!ball) return;
+            
+            // Start ball animation
+            ball.style.opacity = '1';
+            ball.classList.add('animating');
+            
+            // Create money particles when ball hits multipliers
+            plinkoPreviewInterval = setInterval(() => {
+                createMoneyParticles(preview);
+            }, 2000); // Every 2 seconds (when ball hits bottom)
+        }
+        
+        function stopPlinkoPreview() {
+            const preview = document.querySelector('.plinko-preview');
+            if (!preview) return;
+            
+            const ball = preview.querySelector('.ball');
+            if (ball) {
+                ball.style.opacity = '0';
+                ball.classList.remove('animating');
+            }
+            
+            if (plinkoPreviewInterval) {
+                clearInterval(plinkoPreviewInterval);
+                plinkoPreviewInterval = null;
+            }
+        }
+        
+        function createMoneyParticles(container) {
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height - 20; // Near bottom where multipliers are
+            
+            // Create 3-5 money particles
+            const numParticles = 3 + Math.floor(Math.random() * 3);
+            
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'money-particle';
+                particle.textContent = '$';
+                particle.style.fontSize = '8px';
+                particle.style.color = '#00ff88';
+                particle.style.fontWeight = 'bold';
+                
+                // Random position around center
+                const randomX = centerX + (Math.random() - 0.5) * 40;
+                const randomY = centerY + (Math.random() - 0.5) * 20;
+                
+                particle.style.left = randomX + 'px';
+                particle.style.top = randomY + 'px';
+                
+                document.body.appendChild(particle);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 1000);
+            }
         }
     </script>
 </body>
