@@ -1807,25 +1807,37 @@
                 pegsContainer.appendChild(pegRow);
             }
             
-            // Create multipliers to match the LEFT image (9 wide multipliers)
-            const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6]; // Always use low risk layout like left image
+            // Create dynamic multipliers based on risk level - spanning full width
+            const riskLevel = document.getElementById('riskLevel').value;
+            let multiplierValues;
+            
+            if (riskLevel === 'low') {
+                multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6]; // 9 multipliers
+            } else if (riskLevel === 'medium') {
+                multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41]; // 15 multipliers
+            } else { // high risk
+                multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110]; // 17 multipliers
+            }
             
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 40; // Position at bottom with proper spacing
+            const multiplierY = boardHeight - 50; // Position at bottom with proper spacing
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
                 multiplier.className = 'multiplier';
                 multiplier.style.position = 'absolute';
-                multiplier.style.left = (index * slotWidth + slotWidth/2 - slotWidth/2) + 'px';
+                multiplier.style.left = (index * slotWidth) + 'px';
                 multiplier.style.top = multiplierY + 'px';
-                multiplier.style.width = (slotWidth - 2) + 'px';
-                multiplier.style.height = '45px'; // Much taller like left image
+                multiplier.style.width = (slotWidth - 1) + 'px'; // Full width with tiny gap
+                multiplier.style.height = '40px'; // Consistent height
                 multiplier.style.textAlign = 'center';
-                multiplier.style.fontSize = '1rem'; // Larger text like left image
+                // Dynamic font size based on number of multipliers
+                const fontSize = multiplierValues.length <= 9 ? '0.9rem' : 
+                                multiplierValues.length <= 15 ? '0.7rem' : '0.6rem';
+                multiplier.style.fontSize = fontSize;
                 multiplier.style.fontWeight = 'bold';
-                multiplier.style.padding = '8px 4px';
-                multiplier.style.borderRadius = '10px';
+                multiplier.style.padding = '6px 2px';
+                multiplier.style.borderRadius = '8px';
                 multiplier.style.display = 'flex';
                 multiplier.style.alignItems = 'center';
                 multiplier.style.justifyContent = 'center';
@@ -1982,9 +1994,18 @@
                 ball.style.top = y + 'px';
                 
                 // Check if ball reached bottom slots (multipliers are now at bottom)
-                if (y > boardHeight - 40) { // Adjusted for bottom multipliers
-                    // Use the same 9 multiplier layout as the left image
-                    const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                if (y > boardHeight - 50) { // Adjusted for bottom multipliers
+                    // Get current risk level and multiplier values
+                    const riskLevel = document.getElementById('riskLevel').value;
+                    let multiplierValues;
+                    
+                    if (riskLevel === 'low') {
+                        multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    } else if (riskLevel === 'medium') {
+                        multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41];
+                    } else { // high risk
+                        multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110];
+                    }
                     
                     // Calculate which slot the ball landed in
                     const slotWidth = boardWidth / multiplierValues.length;
@@ -2008,8 +2029,17 @@
                 // Stop if ball is moving too slowly (prevent infinite loops)
                 const totalSpeed = Math.sqrt(vx * vx + vy * vy);
                 if (totalSpeed < minSpeed && y > boardHeight - 80) {
-                    // Force end if ball is stuck - use same 9 multiplier layout
-                    const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    // Force end if ball is stuck - get current risk level
+                    const riskLevel = document.getElementById('riskLevel').value;
+                    let multiplierValues;
+                    
+                    if (riskLevel === 'low') {
+                        multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    } else if (riskLevel === 'medium') {
+                        multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41];
+                    } else { // high risk
+                        multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110];
+                    }
                     
                     const slotWidth = boardWidth / multiplierValues.length;
                     const slotIndex = Math.floor(x / slotWidth);
