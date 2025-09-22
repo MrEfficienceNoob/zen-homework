@@ -1061,15 +1061,15 @@
         }
         
         .ball {
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             background: radial-gradient(circle, #ff6b6b, #ee5a52);
             border-radius: 50%;
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+            box-shadow: 0 0 12px rgba(255, 107, 107, 0.8);
             z-index: 10;
             display: none;
             transition: none; /* Remove transitions for smooth physics */
@@ -1805,15 +1805,15 @@
             // Store peg positions for physics calculations
             window.plinkoPegs = [];
             
-            // Create triangular peg arrangement to match the LEFT image (desired appearance)
+            // Create triangular peg arrangement with proper spacing
             const boardWidth = 400;
             const boardHeight = 400; // Full height of the game area
-            const pegRadius = 8; // Larger pegs for better visibility
-            const rowSpacing = 35; // Much wider vertical spacing
-            const startY = 30; // Start closer to top to fill space
+            const pegRadius = 6; // Smaller pegs for better spacing
+            const rowSpacing = 45; // Much wider vertical spacing for breathing room
+            const startY = 20; // Start higher to leave more space for multipliers
             
-            // Use 10-12 rows like the left image (not 16)
-            const actualRows = 11;
+            // Use fewer rows for better spacing
+            const actualRows = 9; // Reduced for better spacing
             
             for (let row = 0; row < actualRows; row++) {
                 const pegRow = document.createElement('div');
@@ -1826,7 +1826,7 @@
                 
                 // Calculate number of pegs in this row (triangular pattern)
                 const pegsInRow = row + 1;
-                const horizontalSpacing = 35; // Much wider horizontal spacing like left image
+                const horizontalSpacing = 45; // Much wider horizontal spacing for breathing room
                 const totalPegWidth = (pegsInRow - 1) * horizontalSpacing;
                 const startX = (boardWidth - totalPegWidth) / 2; // Center the row
                 
@@ -1869,7 +1869,7 @@
             }
             
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 50; // Position at bottom with proper spacing
+            const multiplierY = boardHeight - 60; // More space from triangle
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
@@ -1946,7 +1946,7 @@
         function animatePlinkoBall(ball, betAmount) {
             const board = document.getElementById('plinkoBoard');
             const boardRect = board.getBoundingClientRect();
-            const ballRadius = 9; // Match the larger ball size
+            const ballRadius = 7; // Smaller ball for better spacing
             const boardWidth = 400;
             const boardHeight = 400; // Match the new board height
             
@@ -2043,7 +2043,7 @@
                 ball.style.top = y + 'px';
                 
                 // Check if ball reached bottom slots (multipliers are now at bottom)
-                if (y > boardHeight - 50) { // Adjusted for bottom multipliers
+                if (y > boardHeight - 60) { // Adjusted for bottom multipliers with more space
                     // Get current risk level and multiplier values
                     const riskLevel = document.getElementById('riskLevel').value;
                     let multiplierValues;
@@ -2077,7 +2077,7 @@
                 
                 // Stop if ball is moving too slowly (prevent infinite loops)
                 const totalSpeed = Math.sqrt(vx * vx + vy * vy);
-                if (totalSpeed < minSpeed && y > boardHeight - 80) {
+                if (totalSpeed < minSpeed && y > boardHeight - 90) {
                     // Force end if ball is stuck - get current risk level
                     const riskLevel = document.getElementById('riskLevel').value;
                     let multiplierValues;
