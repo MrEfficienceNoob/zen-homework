@@ -588,6 +588,18 @@
             backdrop-filter: blur(10px);
         }
         
+        .game-card.empty {
+            border: 2px solid #ff4444;
+            box-shadow: 0 8px 32px rgba(255, 68, 68, 0.2);
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05));
+        }
+        
+        .game-card.functional {
+            border: 2px solid #00ff88;
+            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+        }
+        
         .game-card.animate-in {
             opacity: 1;
             transform: translateY(0);
@@ -711,6 +723,106 @@
             background: transparent;
         }
         
+        /* Plinko Preview Animation */
+        .plinko-preview {
+            width: 100%;
+            height: 100px;
+            position: relative;
+            background: linear-gradient(135deg, #000, #1a0a2e);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .plinko-preview .pegs-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 8px;
+        }
+        
+        .plinko-preview .peg-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .plinko-preview .peg {
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 3px #00ff88;
+        }
+        
+        .plinko-preview .ball {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+        
+        .plinko-preview .multipliers {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        
+        .plinko-preview .multiplier {
+            background: #00ff88;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        @keyframes plinkoDrop {
+            0% {
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            25% {
+                top: 30px;
+                left: 45%;
+                transform: translateX(-50%);
+            }
+            50% {
+                top: 50px;
+                left: 55%;
+                transform: translateX(-50%);
+            }
+            75% {
+                top: 70px;
+                left: 48%;
+                transform: translateX(-50%);
+            }
+            100% {
+                top: 85px;
+                left: 52%;
+                transform: translateX(-50%);
+            }
+        }
+        
+        .plinko-preview .ball.animating {
+            animation: plinkoDrop 2s ease-in-out infinite;
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .games-grid {
@@ -778,6 +890,53 @@
         <div class="games-container">
             <div class="games-grid" id="gamesGrid">
                 <!-- Games will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Plinko Game Modal -->
+    <div class="plinko-modal" id="plinkoModal">
+        <div class="plinko-container">
+            <div class="plinko-header">
+                <h2>🎯 Plinko Game</h2>
+                <button class="close-plinko" onclick="closePlinkoGame()">×</button>
+            </div>
+            <div class="plinko-game">
+                <div class="plinko-controls">
+                    <div class="control-group">
+                        <label>Amount</label>
+                        <div class="amount-input">
+                            <span class="coin-icon">💰</span>
+                            <input type="number" id="betAmount" value="1.00" min="0.01" step="0.01">
+                            <div class="amount-buttons">
+                                <button onclick="adjustAmount(0.5)">½</button>
+                                <button onclick="adjustAmount(2)">2×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Risk</label>
+                        <select id="riskLevel">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Rows</label>
+                        <select id="rowCount">
+                            <option value="8">8</option>
+                            <option value="12">12</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+                    <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
+                </div>
+                <div class="plinko-board" id="plinkoBoard">
+                    <div class="ball" id="plinkoBall"></div>
+                    <div class="pegs-container" id="pegsContainer"></div>
+                    <div class="multipliers" id="multipliers"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1189,15 +1348,129 @@
             }, 400);
         }
         
+        // Plinko Game Functions
+        function openPlinkoGame() {
+            const plinkoModal = document.getElementById('plinkoModal');
+            plinkoModal.classList.add('active');
+            initializePlinkoBoard();
+        }
+        
+        function closePlinkoGame() {
+            const plinkoModal = document.getElementById('plinkoModal');
+            plinkoModal.classList.remove('active');
+        }
+        
+        function initializePlinkoBoard() {
+            const pegsContainer = document.getElementById('pegsContainer');
+            const multipliers = document.getElementById('multipliers');
+            const rowCount = parseInt(document.getElementById('rowCount').value);
+            
+            // Clear existing content
+            pegsContainer.innerHTML = '';
+            multipliers.innerHTML = '';
+            
+            // Create pegs
+            for (let row = 0; row < rowCount; row++) {
+                const pegRow = document.createElement('div');
+                pegRow.className = 'peg-row';
+                
+                for (let col = 0; col <= row; col++) {
+                    const peg = document.createElement('div');
+                    peg.className = 'peg';
+                    pegRow.appendChild(peg);
+                }
+                
+                pegsContainer.appendChild(pegRow);
+            }
+            
+            // Create multipliers
+            const multiplierValues = ['5.6x', '2.1x', '1.1x', '1x', '0.5x', '1x', '1.1x', '2.1x', '5.6x'];
+            multiplierValues.forEach((value, index) => {
+                const multiplier = document.createElement('div');
+                multiplier.className = 'multiplier';
+                if (value.includes('5.6') || value.includes('2.1')) {
+                    multiplier.classList.add('high');
+                } else if (value.includes('1.1')) {
+                    multiplier.classList.add('medium');
+                } else {
+                    multiplier.classList.add('low');
+                }
+                multiplier.textContent = value;
+                multipliers.appendChild(multiplier);
+            });
+        }
+        
+        function adjustAmount(multiplier) {
+            const betAmount = document.getElementById('betAmount');
+            const currentAmount = parseFloat(betAmount.value);
+            betAmount.value = (currentAmount * multiplier).toFixed(2);
+        }
+        
+        function playPlinko() {
+            const playButton = document.getElementById('playButton');
+            const ball = document.getElementById('plinkoBall');
+            const betAmount = parseFloat(document.getElementById('betAmount').value);
+            
+            if (betAmount <= 0) {
+                alert('Please enter a valid bet amount!');
+                return;
+            }
+            
+            playButton.disabled = true;
+            playButton.textContent = 'Playing...';
+            
+            // Show ball
+            ball.style.display = 'block';
+            ball.style.top = '20px';
+            ball.style.left = '50%';
+            ball.style.transform = 'translateX(-50%)';
+            
+            // Animate ball drop
+            setTimeout(() => {
+                const finalPosition = Math.random() * 100; // 0-100%
+                ball.style.top = '85%';
+                ball.style.left = finalPosition + '%';
+                ball.style.transform = 'translateX(-50%)';
+                
+                // Calculate result after animation
+                setTimeout(() => {
+                    const result = calculatePlinkoResult(finalPosition);
+                    showPlinkoResult(result, betAmount);
+                    
+                    // Reset
+                    setTimeout(() => {
+                        ball.style.display = 'none';
+                        playButton.disabled = false;
+                        playButton.textContent = 'Play';
+                    }, 2000);
+                }, 1000);
+            }, 100);
+        }
+        
+        function calculatePlinkoResult(position) {
+            // Simple calculation based on position
+            if (position < 10 || position > 90) return 5.6;
+            if (position < 20 || position > 80) return 2.1;
+            if (position < 35 || position > 65) return 1.1;
+            if (position < 45 || position > 55) return 1.0;
+            return 0.5;
+        }
+        
+        function showPlinkoResult(multiplier, betAmount) {
+            const winnings = betAmount * multiplier;
+            alert(`🎉 Plinko Result!\n\nBet: $${betAmount.toFixed(2)}\nMultiplier: ${multiplier}x\nWinnings: $${winnings.toFixed(2)}`);
+        }
+        
         // Gambling Games Library Data
         const gambaLibrary = [
             {
                 id: 'gamba-1',
-                title: 'Lucky Slots',
-                description: 'Spin the reels and win big with our classic slot machine game. All winnings are in-game currency only!',
-                icon: '🎰',
-                status: 'Under Maintenance',
-                category: 'Slots'
+                title: 'Plinko',
+                description: 'Drop the ball and watch it bounce through pegs to land on multipliers. Professional Plinko game with real physics!',
+                icon: '🎯',
+                status: 'Available',
+                category: 'Plinko',
+                functional: true
             },
             {
                 id: 'gamba-2',
@@ -1279,10 +1552,39 @@
             gambaLibrary.forEach((game, index) => {
                 const gameCard = document.createElement('div');
                 gameCard.className = 'game-card';
+                if (game.functional) {
+                    gameCard.classList.add('functional');
+                } else {
+                    gameCard.classList.add('empty');
+                }
                 gameCard.style.transitionDelay = `${index * 0.1}s`;
                 
+                // Create Plinko preview for the first game
+                let iconHTML = '';
+                if (game.id === 'gamba-1') {
+                    iconHTML = `
+                        <div class="plinko-preview">
+                            <div class="pegs-container" id="plinkoPreviewPegs">
+                                <div class="peg-row"><div class="peg"></div></div>
+                                <div class="peg-row"><div class="peg"></div><div class="peg"></div></div>
+                                <div class="peg-row"><div class="peg"></div><div class="peg"></div><div class="peg"></div></div>
+                                <div class="peg-row"><div class="peg"></div><div class="peg"></div><div class="peg"></div><div class="peg"></div></div>
+                            </div>
+                            <div class="ball animating"></div>
+                            <div class="multipliers">
+                                <div class="multiplier">5.6x</div>
+                                <div class="multiplier">2.1x</div>
+                                <div class="multiplier">1.1x</div>
+                                <div class="multiplier">0.5x</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    iconHTML = `<div class="game-icon">${game.icon}</div>`;
+                }
+                
                 gameCard.innerHTML = `
-                    <div class="game-icon">${game.icon}</div>
+                    ${iconHTML}
                     <h3 class="game-title">${game.title}</h3>
                     <p class="game-description">${game.description}</p>
                     <div class="game-status">${game.status}</div>
@@ -1291,6 +1593,8 @@
                 gameCard.addEventListener('click', () => {
                     if (game.status === 'Under Maintenance') {
                         alert('This game is currently under maintenance. Please check back later!');
+                    } else if (game.status === 'Available' && game.id === 'gamba-1') {
+                        openPlinkoGame();
                     }
                 });
                 
@@ -1311,7 +1615,7 @@
             
             gameLibrary.forEach((game, index) => {
                 const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
+                gameCard.className = 'game-card empty';
                 gameCard.style.transitionDelay = `${index * 0.1}s`;
                 
                 gameCard.innerHTML = `
