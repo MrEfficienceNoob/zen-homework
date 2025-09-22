@@ -1012,15 +1012,15 @@
         }
         
         .ball {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             background: radial-gradient(circle, #ff6b6b, #ee5a52);
             border-radius: 50%;
             position: absolute;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+            box-shadow: 0 0 12px rgba(255, 107, 107, 0.8);
             z-index: 10;
             display: none;
             transition: none; /* Remove transitions for smooth physics */
@@ -1756,16 +1756,15 @@
             // Store peg positions for physics calculations
             window.plinkoPegs = [];
             
-            // Create MASSIVE triangular peg arrangement to fill the ENTIRE game board
+            // Create triangular peg arrangement to match the screenshot exactly
             const boardWidth = 400;
             const boardHeight = 400; // Full height of the game area
-            const pegRadius = 10; // Much larger pegs for better visibility
-            const rowSpacing = 18; // Tighter vertical spacing to fit more rows
-            const startY = 15; // Start very close to top
+            const pegRadius = 6; // Match screenshot peg size
+            const rowSpacing = 25; // Match screenshot spacing
+            const startY = 40; // Start with proper spacing from top
             
-            // Calculate how many rows we can fit to fill the entire board
-            const maxRows = Math.floor((boardHeight - startY - 50) / rowSpacing); // Minimal space for multipliers
-            const actualRows = Math.min(rowCount, maxRows);
+            // Use exactly 16 rows to match the screenshot
+            const actualRows = 16;
             
             for (let row = 0; row < actualRows; row++) {
                 const pegRow = document.createElement('div');
@@ -1778,7 +1777,7 @@
                 
                 // Calculate number of pegs in this row (triangular pattern)
                 const pegsInRow = row + 1;
-                const horizontalSpacing = 12; // Much tighter horizontal spacing to fill width
+                const horizontalSpacing = 20; // Match screenshot spacing
                 const totalPegWidth = (pegsInRow - 1) * horizontalSpacing;
                 const startX = (boardWidth - totalPegWidth) / 2; // Center the row
                 
@@ -1787,12 +1786,12 @@
                     peg.className = 'peg';
                     peg.style.position = 'absolute';
                     peg.style.left = (startX + col * horizontalSpacing) + 'px';
-                    peg.style.top = '-8px'; // Center vertically on the row
+                    peg.style.top = '-6px'; // Center vertically on the row
                     peg.style.width = (pegRadius * 2) + 'px';
                     peg.style.height = (pegRadius * 2) + 'px';
                     peg.style.borderRadius = '50%';
                     peg.style.background = '#fff';
-                    peg.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.9)';
+                    peg.style.boxShadow = '0 0 8px rgba(255, 255, 255, 0.8)';
                     peg.style.zIndex = '10';
                     
                     // Store peg position for physics
@@ -1821,7 +1820,7 @@
             }
             
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 45; // Position at very bottom with minimal space
+            const multiplierY = boardHeight - 40; // Position at bottom with proper spacing
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
@@ -1829,13 +1828,13 @@
                 multiplier.style.position = 'absolute';
                 multiplier.style.left = (index * slotWidth + slotWidth/2 - slotWidth/2) + 'px';
                 multiplier.style.top = multiplierY + 'px';
-                multiplier.style.width = (slotWidth - 2) + 'px';
-                multiplier.style.height = '35px';
+                multiplier.style.width = (slotWidth - 4) + 'px';
+                multiplier.style.height = '30px';
                 multiplier.style.textAlign = 'center';
-                multiplier.style.fontSize = '0.8rem';
+                multiplier.style.fontSize = '0.7rem';
                 multiplier.style.fontWeight = 'bold';
-                multiplier.style.padding = '6px 2px';
-                multiplier.style.borderRadius = '8px';
+                multiplier.style.padding = '4px 2px';
+                multiplier.style.borderRadius = '6px';
                 multiplier.style.display = 'flex';
                 multiplier.style.alignItems = 'center';
                 multiplier.style.justifyContent = 'center';
@@ -1895,7 +1894,7 @@
         function animatePlinkoBall(ball, betAmount) {
             const board = document.getElementById('plinkoBoard');
             const boardRect = board.getBoundingClientRect();
-            const ballRadius = 10; // Slightly larger ball for better visibility
+            const ballRadius = 8; // Match screenshot ball size
             const boardWidth = 400;
             const boardHeight = 400; // Match the new board height
             
@@ -1992,7 +1991,7 @@
                 ball.style.top = y + 'px';
                 
                 // Check if ball reached bottom slots (multipliers are now at bottom)
-                if (y > boardHeight - 45) { // Adjusted for bottom multipliers
+                if (y > boardHeight - 40) { // Adjusted for bottom multipliers
                     // Get current risk level and multiplier values
                     const riskLevel = document.getElementById('riskLevel').value;
                     let multiplierValues;
