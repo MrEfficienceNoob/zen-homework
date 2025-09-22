@@ -397,16 +397,35 @@
         }
         
         .slot-reel.winning {
-            animation: reelWin 0.5s ease-out;
+            animation: reelWin 0.6s ease-out;
             background: linear-gradient(135deg, #00ff88, #00cc6a);
             color: #000;
-            box-shadow: 0 0 20px #00ff88;
+            box-shadow: 0 0 25px #00ff88, 0 0 50px #00ff88;
+            border-color: #00ff88;
+            transform: scale(1.1);
         }
         
         @keyframes reelWin {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 10px #00ff88;
+            }
+            25% { 
+                transform: scale(1.15);
+                box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88;
+            }
+            50% { 
+                transform: scale(1.2);
+                box-shadow: 0 0 40px #00ff88, 0 0 80px #00ff88;
+            }
+            75% { 
+                transform: scale(1.15);
+                box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88;
+            }
+            100% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 25px #00ff88, 0 0 50px #00ff88;
+            }
         }
         
         /* Gamba Library Theme */
@@ -915,6 +934,36 @@
             background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
         }
         
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .balance-label {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .balance-amount {
+            color: #00ff88;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+        
+        .balance-currency {
+            color: #ffd700;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
         .plinko-header h2 {
             color: #00ff88;
             font-size: 2rem;
@@ -1330,6 +1379,11 @@
         <div class="plinko-container">
             <div class="plinko-header">
                 <h2>🎯 Plinko Game</h2>
+                <div class="balance-display">
+                    <span class="balance-label">Balance:</span>
+                    <span class="balance-amount" id="balanceAmount">1,000</span>
+                    <span class="balance-currency">₿</span>
+                </div>
                 <button class="close-plinko" onclick="closePlinkoGame()">×</button>
             </div>
             <div class="plinko-game">
@@ -1785,7 +1839,29 @@
         function openPlinkoGame() {
             const plinkoModal = document.getElementById('plinkoModal');
             plinkoModal.classList.add('active');
+            updateBalanceDisplay();
             initializePlinkoBoard();
+        }
+        
+        function updateBalanceDisplay() {
+            const balanceElement = document.getElementById('balanceAmount');
+            if (balanceElement) {
+                balanceElement.textContent = playerBalance.toLocaleString();
+            }
+        }
+        
+        function deductBet(amount) {
+            if (playerBalance >= amount) {
+                playerBalance -= amount;
+                updateBalanceDisplay();
+                return true;
+            }
+            return false;
+        }
+        
+        function addWinnings(amount) {
+            playerBalance += amount;
+            updateBalanceDisplay();
         }
         
         function closePlinkoGame() {
@@ -1927,6 +2003,12 @@
             
             if (betAmount <= 0) {
                 showPlinkoMessage('Please enter a valid bet amount!', 'error');
+                return;
+            }
+            
+            // Check if player has enough balance
+            if (!deductBet(betAmount)) {
+                showPlinkoMessage('Insufficient balance!', 'error');
                 return;
             }
             
@@ -2140,6 +2222,9 @@
         function showPlinkoResult(multiplier, betAmount) {
             const winnings = betAmount * multiplier;
             
+            // Add winnings to balance
+            addWinnings(winnings);
+            
             // Create result display
             const resultDisplay = document.createElement('div');
             resultDisplay.className = 'plinko-result';
@@ -2157,7 +2242,7 @@
                         </div>
                         <div class="result-item">
                             <span class="result-label">Winnings:</span>
-                            <span class="result-value winnings">$${winnings.toFixed(2)}</span>
+                            <span class="result-value winnings">+$${winnings.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -2417,6 +2502,7 @@
         // Dollar Sign Jumping Effect
         let dollarSignInterval = null;
         let plinkoPreviewInterval = null;
+        let playerBalance = 1000; // Starting balance
         
         function startDollarJumpEffect() {
             const gambaButton = document.querySelector('.gamba-button');
@@ -2487,24 +2573,32 @@
             
             const spinReel = (reelId, delay) => {
                 const reel = document.getElementById(reelId);
+                if (!reel) return;
+                
+                // Clear any existing classes
+                reel.classList.remove('spinning', 'winning');
                 reel.classList.add('spinning');
                 
                 // Show random numbers while spinning
                 const spinInterval = setInterval(() => {
                     reel.textContent = numbers[Math.floor(Math.random() * numbers.length)];
-                }, 100);
+                }, 80);
                 
                 // Stop spinning after delay and show 7
                 setTimeout(() => {
                     clearInterval(spinInterval);
                     reel.classList.remove('spinning');
                     reel.textContent = '7';
-                    reel.classList.add('winning');
                     
-                    // Remove winning class after animation
+                    // Add winning highlight after a brief pause
                     setTimeout(() => {
-                        reel.classList.remove('winning');
-                    }, 500);
+                        reel.classList.add('winning');
+                        
+                        // Remove winning class after animation
+                        setTimeout(() => {
+                            reel.classList.remove('winning');
+                        }, 600);
+                    }, 100);
                 }, delay);
             };
             
@@ -2516,7 +2610,7 @@
             // Loop the animation
             setTimeout(() => {
                 startSlotMachine();
-            }, 4000);
+            }, 5000); // Increased delay for better timing
         }
         
         // Initialize
