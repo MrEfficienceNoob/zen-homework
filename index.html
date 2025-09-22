@@ -807,6 +807,15 @@
             animation: moneyParticle 1s ease-out infinite;
         }
         
+        .plinko-preview.animating .ball {
+            opacity: 1;
+            animation: plinkoDrop 2s ease-in-out infinite;
+        }
+        
+        .plinko-preview.animating .money-particle {
+            animation: moneyParticle 1s ease-out infinite;
+        }
+        
         .money-particle {
             position: absolute;
             width: 8px;
@@ -2302,6 +2311,9 @@
                                 <div class="multiplier">1x</div>
                                 <div class="multiplier">0.5x</div>
                             </div>
+                            <div class="money-particle"></div>
+                            <div class="money-particle"></div>
+                            <div class="money-particle"></div>
                         </div>
                     `;
                 } else {
@@ -2516,12 +2528,8 @@
             const preview = document.querySelector('.plinko-preview');
             if (!preview) return;
             
-            const ball = preview.querySelector('.ball');
-            if (!ball) return;
-            
-            // Start ball animation
-            ball.style.opacity = '1';
-            ball.classList.add('animating');
+            // Add animating class to preview
+            preview.classList.add('animating');
             
             // Create money particles when ball hits multipliers
             plinkoPreviewInterval = setInterval(() => {
@@ -2533,11 +2541,8 @@
             const preview = document.querySelector('.plinko-preview');
             if (!preview) return;
             
-            const ball = preview.querySelector('.ball');
-            if (ball) {
-                ball.style.opacity = '0';
-                ball.classList.remove('animating');
-            }
+            // Remove animating class
+            preview.classList.remove('animating');
             
             if (plinkoPreviewInterval) {
                 clearInterval(plinkoPreviewInterval);
