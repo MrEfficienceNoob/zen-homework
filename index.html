@@ -1298,7 +1298,7 @@
                     </div>
                     <div class="control-group">
                         <label>Risk</label>
-                        <select id="riskLevel">
+                        <select id="riskLevel" onchange="initializePlinkoBoard()">
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
@@ -1756,15 +1756,15 @@
             // Store peg positions for physics calculations
             window.plinkoPegs = [];
             
-            // Create massive triangular peg arrangement to fill the ENTIRE game board
+            // Create MASSIVE triangular peg arrangement to fill the ENTIRE game board
             const boardWidth = 400;
             const boardHeight = 400; // Full height of the game area
-            const pegRadius = 8; // Much larger pegs for better visibility
-            const rowSpacing = 20; // Tighter vertical spacing to fit more rows
-            const startY = 20; // Start very close to top
+            const pegRadius = 10; // Much larger pegs for better visibility
+            const rowSpacing = 18; // Tighter vertical spacing to fit more rows
+            const startY = 15; // Start very close to top
             
             // Calculate how many rows we can fit to fill the entire board
-            const maxRows = Math.floor((boardHeight - startY - 60) / rowSpacing); // Minimal space for multipliers
+            const maxRows = Math.floor((boardHeight - startY - 50) / rowSpacing); // Minimal space for multipliers
             const actualRows = Math.min(rowCount, maxRows);
             
             for (let row = 0; row < actualRows; row++) {
@@ -1778,7 +1778,7 @@
                 
                 // Calculate number of pegs in this row (triangular pattern)
                 const pegsInRow = row + 1;
-                const horizontalSpacing = 15; // Much tighter horizontal spacing to fill width
+                const horizontalSpacing = 12; // Much tighter horizontal spacing to fill width
                 const totalPegWidth = (pegsInRow - 1) * horizontalSpacing;
                 const startX = (boardWidth - totalPegWidth) / 2; // Center the row
                 
@@ -1808,24 +1808,34 @@
                 pegsContainer.appendChild(pegRow);
             }
             
-            // Create multipliers at the VERY BOTTOM with minimal spacing
-            const multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+            // Create dynamic multipliers based on risk level
+            const riskLevel = document.getElementById('riskLevel').value;
+            let multiplierValues;
+            
+            if (riskLevel === 'low') {
+                multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+            } else if (riskLevel === 'medium') {
+                multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41];
+            } else { // high risk
+                multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110];
+            }
+            
             const slotWidth = boardWidth / multiplierValues.length;
-            const multiplierY = boardHeight - 50; // Position at very bottom with minimal space
+            const multiplierY = boardHeight - 45; // Position at very bottom with minimal space
             
             multiplierValues.forEach((value, index) => {
                 const multiplier = document.createElement('div');
                 multiplier.className = 'multiplier';
                 multiplier.style.position = 'absolute';
-                multiplier.style.left = (index * slotWidth + slotWidth/2 - 30) + 'px';
+                multiplier.style.left = (index * slotWidth + slotWidth/2 - slotWidth/2) + 'px';
                 multiplier.style.top = multiplierY + 'px';
-                multiplier.style.width = '60px';
-                multiplier.style.height = '40px';
+                multiplier.style.width = (slotWidth - 2) + 'px';
+                multiplier.style.height = '35px';
                 multiplier.style.textAlign = 'center';
-                multiplier.style.fontSize = '1rem';
+                multiplier.style.fontSize = '0.8rem';
                 multiplier.style.fontWeight = 'bold';
-                multiplier.style.padding = '8px 4px';
-                multiplier.style.borderRadius = '10px';
+                multiplier.style.padding = '6px 2px';
+                multiplier.style.borderRadius = '8px';
                 multiplier.style.display = 'flex';
                 multiplier.style.alignItems = 'center';
                 multiplier.style.justifyContent = 'center';
@@ -1982,15 +1992,26 @@
                 ball.style.top = y + 'px';
                 
                 // Check if ball reached bottom slots (multipliers are now at bottom)
-                if (y > boardHeight - 50) { // Adjusted for bottom multipliers
+                if (y > boardHeight - 45) { // Adjusted for bottom multipliers
+                    // Get current risk level and multiplier values
+                    const riskLevel = document.getElementById('riskLevel').value;
+                    let multiplierValues;
+                    
+                    if (riskLevel === 'low') {
+                        multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    } else if (riskLevel === 'medium') {
+                        multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41];
+                    } else { // high risk
+                        multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110];
+                    }
+                    
                     // Calculate which slot the ball landed in
-                    const slotWidth = boardWidth / 9; // 9 slots
+                    const slotWidth = boardWidth / multiplierValues.length;
                     const slotIndex = Math.floor(x / slotWidth);
-                    const slotIndexClamped = Math.max(0, Math.min(8, slotIndex));
+                    const slotIndexClamped = Math.max(0, Math.min(multiplierValues.length - 1, slotIndex));
                     
                     // Get multiplier for this slot
-                    const multipliers = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
-                    const result = multipliers[slotIndexClamped];
+                    const result = multiplierValues[slotIndexClamped];
                     
                     showPlinkoResult(result, betAmount);
                     
@@ -2006,12 +2027,22 @@
                 // Stop if ball is moving too slowly (prevent infinite loops)
                 const totalSpeed = Math.sqrt(vx * vx + vy * vy);
                 if (totalSpeed < minSpeed && y > boardHeight - 80) {
-                    // Force end if ball is stuck
-                    const slotWidth = boardWidth / 9;
+                    // Force end if ball is stuck - get current risk level
+                    const riskLevel = document.getElementById('riskLevel').value;
+                    let multiplierValues;
+                    
+                    if (riskLevel === 'low') {
+                        multiplierValues = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
+                    } else if (riskLevel === 'medium') {
+                        multiplierValues = [41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41];
+                    } else { // high risk
+                        multiplierValues = [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110];
+                    }
+                    
+                    const slotWidth = boardWidth / multiplierValues.length;
                     const slotIndex = Math.floor(x / slotWidth);
-                    const slotIndexClamped = Math.max(0, Math.min(8, slotIndex));
-                    const multipliers = [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6];
-                    const result = multipliers[slotIndexClamped];
+                    const slotIndexClamped = Math.max(0, Math.min(multiplierValues.length - 1, slotIndex));
+                    const result = multiplierValues[slotIndexClamped];
                     
                     showPlinkoResult(result, betAmount);
                     
