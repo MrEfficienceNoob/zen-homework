@@ -440,16 +440,29 @@
             transform: translateY(-2px);
         }
         
-        .game-library.gamba-theme .game-card {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
-            border: 2px solid #00ff88;
-            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+        .game-library.gamba-theme .game-card.empty {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05)) !important;
+            border: 3px solid #ff4444 !important;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), 0 8px 32px rgba(255, 68, 68, 0.2) !important;
         }
         
-        .game-library.gamba-theme .game-card:hover {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
-            border-color: #00ffaa;
-            box-shadow: 0 15px 50px rgba(0, 255, 136, 0.4);
+        .game-library.gamba-theme .game-card.functional {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05)) !important;
+            border: 3px solid #00ff88 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4), 0 8px 32px rgba(0, 255, 136, 0.2) !important;
+        }
+        
+        .game-library.gamba-theme .game-card.empty:hover {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.15), rgba(255, 68, 68, 0.1)) !important;
+            border-color: #ff4444 !important;
+            box-shadow: 0 0 25px rgba(255, 68, 68, 0.6), 0 15px 50px rgba(255, 68, 68, 0.4) !important;
+            transform: translateY(-8px) scale(1.05);
+        }
+        
+        .game-library.gamba-theme .game-card.functional:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.1)) !important;
+            border-color: #00ffaa !important;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.6), 0 15px 50px rgba(0, 255, 136, 0.4) !important;
             transform: translateY(-8px) scale(1.05);
         }
         
@@ -650,15 +663,15 @@
         }
         
         .game-card.empty {
-            border: 2px solid #ff4444;
-            box-shadow: 0 8px 32px rgba(255, 68, 68, 0.2);
-            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05));
+            border: 3px solid #ff4444 !important;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), 0 8px 32px rgba(255, 68, 68, 0.2) !important;
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05)) !important;
         }
         
         .game-card.functional {
-            border: 2px solid #00ff88;
-            box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            border: 3px solid #00ff88 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4), 0 8px 32px rgba(0, 255, 136, 0.2) !important;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05)) !important;
         }
         
         .game-card.animate-in {
@@ -667,11 +680,20 @@
         }
         
         .game-card:hover {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: #8b5cf6;
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
             border-radius: 25px;
+        }
+        
+        .game-card.empty:hover {
+            background: rgba(255, 68, 68, 0.15) !important;
+            border-color: #ff4444 !important;
+            box-shadow: 0 0 25px rgba(255, 68, 68, 0.6), 0 20px 40px rgba(255, 68, 68, 0.3) !important;
+        }
+        
+        .game-card.functional:hover {
+            background: rgba(0, 255, 136, 0.15) !important;
+            border-color: #00ff88 !important;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.6), 0 20px 40px rgba(0, 255, 136, 0.3) !important;
         }
         
         .game-icon {
