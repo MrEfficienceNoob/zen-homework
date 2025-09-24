@@ -2765,29 +2765,41 @@
                 }
                 gameCard.style.transitionDelay = `${index * 0.1}s`;
                 
-                // Create special preview for Plinko
-                let iconHTML;
-                if (game.id === 'gamba-1' && game.functional) {
-                    iconHTML = `
-                        <div class="plinko-preview" id="plinkoPreview">
-                            <div class="plinko-preview-static">
-                                <div style="font-size: 3rem;">🎯</div>
+                // Create content based on game status
+                let gameContent;
+                if (game.functional) {
+                    // Functional games show full content
+                    let iconHTML;
+                    if (game.id === 'gamba-1') {
+                        iconHTML = `
+                            <div class="plinko-preview" id="plinkoPreview">
+                                <div class="plinko-preview-static">
+                                    <div style="font-size: 3rem;">🎯</div>
+                                </div>
+                                <div class="plinko-preview-animated">
+                                    <canvas class="plinko-preview-canvas" id="plinkoPreviewCanvas" width="300" height="120"></canvas>
+                                </div>
                             </div>
-                            <div class="plinko-preview-animated">
-                                <canvas class="plinko-preview-canvas" id="plinkoPreviewCanvas" width="300" height="120"></canvas>
-                            </div>
-                        </div>
+                        `;
+                    } else {
+                        iconHTML = `<div class="game-icon">${game.icon}</div>`;
+                    }
+                    
+                    gameContent = `
+                        ${iconHTML}
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-description">${game.description}</p>
+                        <div class="game-status">${game.status}</div>
                     `;
                 } else {
-                    iconHTML = `<div class="game-icon">${game.icon}</div>`;
+                    // Under maintenance games show only "?"
+                    gameContent = `
+                        <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
+                        <div class="game-status">${game.status}</div>
+                    `;
                 }
                 
-                gameCard.innerHTML = `
-                    ${iconHTML}
-                    <h3 class="game-title">${game.title}</h3>
-                    <p class="game-description">${game.description}</p>
-                    <div class="game-status">${game.status}</div>
-                `;
+                gameCard.innerHTML = gameContent;
                 
                 gameCard.addEventListener('click', () => {
                     if (game.functional && game.id === 'gamba-1') {
@@ -2831,16 +2843,17 @@
                 gameCard.className = 'game-card empty'; // All normal games are currently under maintenance
                 gameCard.style.transitionDelay = `${index * 0.1}s`;
                 
+                // All normal games are under maintenance, so show only "?"
                 gameCard.innerHTML = `
-                    <div class="game-icon">${game.icon}</div>
-                    <h3 class="game-title">${game.title}</h3>
-                    <p class="game-description">${game.description}</p>
+                    <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
                     <div class="game-status">${game.status}</div>
                 `;
                 
                 gameCard.addEventListener('click', () => {
                     if (game.status === 'Available') {
                         launchGame(game.id);
+                    } else {
+                        alert('This game is currently under maintenance. Please check back later!');
                     }
                 });
                 
