@@ -2078,10 +2078,16 @@
 
         // Loading Screen Functions
         function showLoadingScreen(text = 'Loading...') {
+            console.log('showLoadingScreen called with:', text); // Debug log
             const loadingScreen = document.getElementById('loadingScreen');
             const loadingText = document.getElementById('loadingText');
             const loadingBar = document.getElementById('loadingBar');
             const loadingPercentage = document.getElementById('loadingPercentage');
+            
+            if (!loadingScreen) {
+                console.error('Loading screen element not found!');
+                return;
+            }
             
             loadingText.textContent = text;
             loadingBar.style.width = '0%';
@@ -2112,6 +2118,7 @@
 
         // Navigation Functions with Loading Screen
         function openCategorySelection() {
+            console.log('openCategorySelection called'); // Debug log
             showLoadingScreen('Loading categories...');
             
             setTimeout(() => {
