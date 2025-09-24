@@ -1392,10 +1392,10 @@
                         <div class="slot-reel" id="reel2">7</div>
                         <div class="slot-reel" id="reel3">7</div>
                     </div>
-                </div>
-            </div>
-                        </div>
                     </div>
+                </div>
+                    </div>
+                </div>
                     
     <!-- Game Library Page -->
     <div class="game-library" id="gameLibrary">
@@ -1407,16 +1407,16 @@
                 <span class="library-balance-label">Balance:</span>
                 <span class="library-balance-amount" id="libraryBalanceAmount">1,000</span>
                 <span class="library-balance-currency">₿</span>
+                        </div>
                     </div>
-                </div>
-
+                    
         <div class="games-container">
             <div class="games-grid" id="gamesGrid">
                 <!-- Games will be populated by JavaScript -->
+                    </div>
                 </div>
                 </div>
-            </div>
-    
+
     <!-- Full-Screen Plinko Game -->
     <div class="plinko-fullscreen" id="plinkoFullscreen">
         <div class="plinko-header">
@@ -1426,8 +1426,8 @@
                 <span class="balance-label">Balance:</span>
                 <span class="balance-amount" id="balanceAmount">1,000</span>
                 <span class="balance-currency">₿</span>
+                </div>
             </div>
-        </div>
         
         <div class="plinko-controls-bar">
             <div class="control-group">
@@ -1438,7 +1438,7 @@
                     <div class="amount-buttons">
                         <button onclick="adjustAmount(0.5)">½</button>
                         <button onclick="adjustAmount(2)">2×</button>
-                    </div>
+                </div>
                 </div>
             </div>
             <div class="control-group">
@@ -1448,7 +1448,7 @@
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                 </select>
-            </div>
+        </div>
             <div class="control-group">
                 <label>Rows</label>
                 <select id="rowCount" onchange="initializePlinkoBoard()">
@@ -1458,10 +1458,10 @@
                     <option value="14">14</option>
                     <option value="16">16</option>
                 </select>
-            </div>
+                </div>
             <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
         </div>
-        
+
         <div class="plinko-game-area">
             <canvas id="plinkoCanvas" width="1200" height="800"></canvas>
             <div class="multipliers-bar" id="multipliers"></div>
@@ -1945,11 +1945,11 @@
                 this.pins = [];
                 
                 // Create triangular pin arrangement for full-screen
-                // Start from row 1 (not row 0) to leave space for ball drop
-                const pinSpacing = 60;
+                const pinSpacing = 60; // Larger spacing for full-screen
                 const startY = 120; // Start lower to leave space for ball drop
                 const centerX = this.boardWidth / 2;
                 
+                // Start from row 1 (not row 0) to leave space for ball drop
                 for (let row = 1; row <= rows; row++) {
                     const pinsInRow = row;
                     const rowWidth = (pinsInRow - 1) * pinSpacing;
@@ -1983,13 +1983,17 @@
                 
                 // Multipliers go in the gaps between pins, so we have rows + 1 slots
                 const slotCount = rows + 1;
+                
                 let multiplierValues = [];
                 
                 if (riskLevel === 'low') {
+                    // Low risk: mostly positive multipliers
                     multiplierValues = this.generateLowRiskMultipliers(slotCount);
                 } else if (riskLevel === 'medium') {
+                    // Medium risk: balanced
                     multiplierValues = this.generateMediumRiskMultipliers(slotCount);
                 } else {
+                    // High risk: extreme multipliers
                     multiplierValues = this.generateHighRiskMultipliers(slotCount);
                 }
                 
@@ -2317,9 +2321,8 @@
                         this.showResult(result);
                     }
                     
-                    if (this.balls.length > 0 || this.isRunning) {
-                        this.animationId = requestAnimationFrame(animate);
-                    }
+                    // Keep animation running to show pins even when no balls
+                    this.animationId = requestAnimationFrame(animate);
                 };
                 
                 this.animationId = requestAnimationFrame(animate);
@@ -2352,7 +2355,7 @@
                             <div class="result-item">
                                 <span class="result-label">Bet:</span>
                                 <span class="result-value">$${betAmount.toFixed(2)}</span>
-                            </div>
+                        </div>
                             <div class="result-item">
                                 <span class="result-label">Multiplier:</span>
                                 <span class="result-value multiplier-${result.multiplier >= 5 ? 'high' : result.multiplier >= 1 ? 'medium' : 'low'}">${result.multiplier}x</span>
