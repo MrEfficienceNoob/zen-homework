@@ -596,6 +596,165 @@
             font-weight: 700;
             text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
         }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loading-bar-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #f0f0f0);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s ease;
+            position: relative;
+        }
+
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .loading-percentage {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        /* Game Modal */
+        .game-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .game-modal.active {
+            opacity: 1;
+        }
+
+        .game-modal-content {
+            width: 95%;
+            height: 95%;
+            background: #000;
+            border-radius: 15px;
+            border: 2px solid #8b5cf6;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .game-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-bottom: 1px solid #8b5cf6;
+        }
+
+        .game-modal-title {
+            color: #8b5cf6;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .game-modal-close {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .game-modal-close:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: #fff;
+        }
+
+        .game-modal-body {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .game-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
         
         .library-balance-currency {
             color: #ffd700;
@@ -1144,6 +1303,16 @@
                 </div>
                 </div>
 
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-text" id="loadingText">Loading...</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+        </div>
+    </div>
 
     <script>
         // Enhanced Particle System with Hover-Based Connections
@@ -1311,11 +1480,63 @@
         // Game Library Data
         const gameLibrary = [
             {
+                id: 'hole-io',
+                title: 'Hole.io',
+                description: 'Control a black hole and consume everything in your path! Grow bigger and dominate the city.',
+                icon: '🕳️',
+                status: 'Available',
+                functional: true,
+                category: 'Arcade',
+                embedCode: `
+                    <html><head>
+                        <title>HOLE.IO</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+                        <style>
+                            html, body {
+                                height: 100%
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                background-color: #000;
+                            }
+                            iframe {
+                                display: block;
+                                width: 100%;
+                                height: 100%;
+                                margin: 0;
+                                padding: 0;
+                                border: 0;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <iframe id="container" allowfullscreen="" src="https://kevin.games/hole/index-gd.php?gd_sdk_referrer_url=https://html5.gamedistribution.com/bf10577cd0644646a2a0152fe3b4d586/"></iframe>
+                        <script type="application/javascript">
+                            function getParentUrl() {
+                                var url = (window.location !== window.parent.location)
+                                    ? (document.referrer && document.referrer !== '')
+                                        ? document.referrer
+                                        : document.location.href
+                                    : document.location.href;
+                                if (document.referrer.indexOf('localhost') !== -1) {
+                                    url = 'https://gamedistribution.com/';
+                                }
+                                return url;
+                            }
+                            var gameUrl = 'https://kevin.games/hole/index-gd.php';
+                            document.getElementById('container').src = gameUrl + '?gd_sdk_referrer_url=' + getParentUrl();
+                        </script>
+                    </body></html>
+                `
+            },
+            {
                 id: 'game-1',
                 title: 'Neon Racer',
                 description: 'High-speed racing through neon-lit cyberpunk environments with smooth, fluid animations.',
                 icon: '🏎️',
                 status: 'Under Maintenance',
+                functional: false,
                 category: 'Racing'
             },
             {
@@ -1816,1121 +2037,133 @@
         if (categoryPage) {
             observer.observe(categoryPage, { attributes: true, attributeFilter: ['class'] });
         }
-        
-    </script>
-</body>
-</html>
-                const centerX = this.boardWidth / 2;
+
+        // Loading Screen Functions
+        function showLoadingScreen(text = 'Loading...') {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingText = document.getElementById('loadingText');
+            const loadingBar = document.getElementById('loadingBar');
+            const loadingPercentage = document.getElementById('loadingPercentage');
+            
+            loadingText.textContent = text;
+            loadingBar.style.width = '0%';
+            loadingPercentage.textContent = '0%';
+            loadingScreen.classList.add('active');
+            
+            // Animate loading bar
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15 + 5; // Random increment between 5-20
+                if (progress > 100) progress = 100;
                 
-                // Start from row 1 (not row 0) to leave space for ball drop
-                for (let row = 1; row <= rows; row++) {
-                    const pinsInRow = row;
-                    const rowWidth = (pinsInRow - 1) * pinSpacing;
-                    const startX = centerX - rowWidth / 2;
-                    
-                    for (let col = 0; col < pinsInRow; col++) {
-                        const x = startX + col * pinSpacing;
-                        const y = startY + (row - 1) * pinSpacing;
-                        
-                        this.pins.push({
-                            x: x,
-                            y: y,
-                            radius: this.pinRadius
-                        });
-                    }
+                loadingBar.style.width = progress + '%';
+                loadingPercentage.textContent = Math.round(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(loadingInterval);
                 }
-                
-                // Setup multipliers based on risk level
-                this.setupMultipliers(riskLevel, rows);
-            }
+            }, 50);
             
-            setupMultipliers(riskLevel, rows) {
-                this.multipliers = [];
-                
-                // Calculate multiplier positions to align with gaps between last row pins
-                const pinSpacing = 40; // Match the pin spacing from setupBoard
-                const centerX = this.boardWidth / 2;
-                const lastRowPins = rows;
-                const lastRowWidth = (lastRowPins - 1) * pinSpacing;
-                const lastRowStartX = centerX - lastRowWidth / 2;
-                
-                // Multipliers go in the gaps between pins, so we have rows + 1 slots
-                const slotCount = rows + 1;
-                
-                let multiplierValues = [];
-                
-                if (riskLevel === 'low') {
-                    // Low risk: mostly positive multipliers
-                    multiplierValues = this.generateLowRiskMultipliers(slotCount);
-                } else if (riskLevel === 'medium') {
-                    // Medium risk: balanced
-                    multiplierValues = this.generateMediumRiskMultipliers(slotCount);
-                } else {
-                    // High risk: extreme multipliers
-                    multiplierValues = this.generateHighRiskMultipliers(slotCount);
-                }
-                
-                // Position multipliers directly under the last row of pins
-                const lastRowY = 60 + (rows - 1) * pinSpacing; // Y position of last row
-                const multiplierY = lastRowY + pinSpacing + 20; // Position directly under with some spacing
-                
-                for (let i = 0; i < slotCount; i++) {
-                    let x;
-                    if (i === 0) {
-                        // First slot: before the first pin
-                        x = lastRowStartX - pinSpacing / 2;
-                    } else if (i === slotCount - 1) {
-                        // Last slot: after the last pin
-                        x = lastRowStartX + lastRowWidth + pinSpacing / 2;
-                    } else {
-                        // Middle slots: between pins
-                        x = lastRowStartX + (i - 0.5) * pinSpacing;
-                    }
-                    
-                    this.multipliers.push({
-                        x: x,
-                        y: multiplierY,
-                        width: pinSpacing * 0.8,
-                        value: multiplierValues[i],
-                        index: i
-                    });
-                }
-                
-                this.updateMultiplierDisplay();
-            }
+            return loadingInterval;
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            loadingScreen.classList.remove('active');
+        }
+
+        // Navigation Functions with Loading Screen
+        function openCategorySelection() {
+            showLoadingScreen('Loading categories...');
             
-            generateLowRiskMultipliers(count) {
-                const multipliers = [];
-                const center = Math.floor(count / 2);
-                
-                for (let i = 0; i < count; i++) {
-                    const distance = Math.abs(i - center);
-                    if (distance === 0) {
-                        multipliers.push(1.0);
-                    } else if (distance === 1) {
-                        multipliers.push(1.5);
-                    } else if (distance === 2) {
-                        multipliers.push(2.0);
-                    } else if (distance === 3) {
-                        multipliers.push(3.0);
-                    } else {
-                        multipliers.push(5.0);
-                    }
-                }
-                
-                return multipliers;
-            }
+            setTimeout(() => {
+                hideLoadingScreen();
+                document.getElementById('welcomePage').classList.remove('active');
+                document.getElementById('categoryPage').classList.add('active');
+            }, 800);
+        }
+
+        function openGameLibrary() {
+            showLoadingScreen('Loading game library...');
             
-            generateMediumRiskMultipliers(count) {
-                const multipliers = [];
-                const center = Math.floor(count / 2);
-                
-                for (let i = 0; i < count; i++) {
-                    const distance = Math.abs(i - center);
-                    if (distance === 0) {
-                        multipliers.push(0.5);
-                    } else if (distance === 1) {
-                        multipliers.push(1.0);
-                    } else if (distance === 2) {
-                        multipliers.push(2.0);
-                    } else if (distance === 3) {
-                        multipliers.push(5.0);
-                    } else if (distance === 4) {
-                        multipliers.push(10.0);
-                    } else {
-                        multipliers.push(20.0);
-                    }
-                }
-                
-                return multipliers;
-            }
+            setTimeout(() => {
+                hideLoadingScreen();
+                document.getElementById('categoryPage').classList.remove('active');
+                document.getElementById('gameLibrary').classList.add('active');
+                populateGameLibrary();
+            }, 800);
+        }
+
+        function openGambaLibrary() {
+            showLoadingScreen('Loading gambling games...');
             
-            generateHighRiskMultipliers(count) {
-                const multipliers = [];
-                const center = Math.floor(count / 2);
-                
-                for (let i = 0; i < count; i++) {
-                    const distance = Math.abs(i - center);
-                    if (distance === 0) {
-                        multipliers.push(0.2);
-                    } else if (distance === 1) {
-                        multipliers.push(0.5);
-                    } else if (distance === 2) {
-                        multipliers.push(1.0);
-                    } else if (distance === 3) {
-                        multipliers.push(2.0);
-                    } else if (distance === 4) {
-                        multipliers.push(5.0);
-                    } else if (distance === 5) {
-                        multipliers.push(10.0);
-                    } else if (distance === 6) {
-                        multipliers.push(25.0);
-                    } else if (distance === 7) {
-                        multipliers.push(50.0);
-                    } else {
-                        multipliers.push(100.0);
-                    }
-                }
-                
-                return multipliers;
-            }
+            setTimeout(() => {
+                hideLoadingScreen();
+                document.getElementById('categoryPage').classList.remove('active');
+                document.getElementById('gameLibrary').classList.add('active');
+                populateGambaLibrary();
+            }, 800);
+        }
+
+        function closeGameLibrary() {
+            showLoadingScreen('Returning to categories...');
             
-            updateMultiplierDisplay() {
-                const multipliersContainer = document.getElementById('multipliers');
-                multipliersContainer.innerHTML = '';
-                
-                this.multipliers.forEach(multiplier => {
-                    const element = document.createElement('div');
-                    element.className = 'multiplier';
-                    element.textContent = multiplier.value + 'x';
-                    
-                    // Add appropriate class based on multiplier value
-                    if (multiplier.value >= 5) {
-                        element.classList.add('high');
-                    } else if (multiplier.value >= 1) {
-                        element.classList.add('medium');
-                    } else {
-                        element.classList.add('low');
-                    }
-                    
-                    multipliersContainer.appendChild(element);
-                });
-            }
+            setTimeout(() => {
+                hideLoadingScreen();
+                document.getElementById('gameLibrary').classList.remove('active');
+                document.getElementById('categoryPage').classList.add('active');
+            }, 600);
+        }
+
+        // Game Launch Functions
+        function launchHoleIO() {
+            showLoadingScreen('Launching Hole.io...');
             
-            dropBall() {
-                console.log('Creating new ball...');
-                const ball = {
-                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 15, // Drop from center
-                    y: 30, // Start higher up in the smaller canvas
-                    vx: (Math.random() - 0.5) * 1.5,
-                    vy: 0,
-                    radius: this.ballRadius,
-                    color: this.getRandomBallColor(),
-                    trail: []
-                };
-                
-                this.balls.push(ball);
-                console.log('Ball added. Total balls:', this.balls.length);
-                console.log('Ball position:', ball.x, ball.y);
-            }
-            
-            getRandomBallColor() {
-                const colors = ['#00ff88', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-            
-            updateBall(ball) {
-                // Apply gravity
-                ball.vy += this.gravity;
-                
-                // Apply friction
-                ball.vx *= this.friction;
-                ball.vy *= this.friction;
-                
-                // Update position
-                ball.x += ball.vx;
-                ball.y += ball.vy;
-                
-                // Add to trail
-                ball.trail.push({ x: ball.x, y: ball.y });
-                if (ball.trail.length > 8) {
-                    ball.trail.shift();
-                }
-                
-                // Check pin collisions
-                this.checkPinCollisions(ball);
-                
-                // Check wall collisions
-                this.checkWallCollisions(ball);
-                
-                // Check if ball reached bottom
-                if (ball.y > this.boardHeight - 50) {
-                    return this.checkMultiplierCollision(ball);
-                }
-                
-                return null;
-            }
-            
-            checkPinCollisions(ball) {
-                this.pins.forEach(pin => {
-                    const dx = ball.x - pin.x;
-                    const dy = ball.y - pin.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < ball.radius + pin.radius) {
-                        // Collision detected
-                        const angle = Math.atan2(dy, dx);
-                        const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-                        
-                        // Calculate reflection
-                        const newAngle = angle + Math.PI + (Math.random() - 0.5) * 0.5;
-                        const newSpeed = speed * this.bounce;
-                        
-                        ball.vx = Math.cos(newAngle) * newSpeed;
-                        ball.vy = Math.sin(newAngle) * newSpeed;
-                        
-                        // Move ball away from pin
-                        const overlap = ball.radius + pin.radius - distance;
-                        ball.x += Math.cos(angle) * overlap;
-                        ball.y += Math.sin(angle) * overlap;
-                    }
-                });
-            }
-            
-            checkWallCollisions(ball) {
-                if (ball.x - ball.radius < 0) {
-                    ball.x = ball.radius;
-                    ball.vx = Math.abs(ball.vx) * this.bounce;
-                }
-                if (ball.x + ball.radius > this.boardWidth) {
-                    ball.x = this.boardWidth - ball.radius;
-                    ball.vx = -Math.abs(ball.vx) * this.bounce;
-                }
-            }
-            
-            checkMultiplierCollision(ball) {
-                // Find the closest multiplier slot to the ball's x position
-                let closestIndex = 0;
-                let closestDistance = Math.abs(ball.x - this.multipliers[0].x);
-                
-                for (let i = 1; i < this.multipliers.length; i++) {
-                    const distance = Math.abs(ball.x - this.multipliers[i].x);
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestIndex = i;
-                    }
-                }
-                
-                const multiplier = this.multipliers[closestIndex];
-                
-                return {
-                    multiplier: multiplier.value,
-                    index: closestIndex
-                };
-            }
-            
-            draw() {
-                // Clear canvas
-                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
-                this.ctx.fillRect(0, 0, this.boardWidth, this.boardHeight);
-                
-                // Draw pins
-                this.ctx.fillStyle = '#ffffff';
-                this.pins.forEach(pin => {
-                    this.ctx.beginPath();
-                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    
-                    // Add glow effect
-                    this.ctx.shadowColor = '#ffffff';
-                    this.ctx.shadowBlur = 10;
-                    this.ctx.beginPath();
-                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    this.ctx.shadowBlur = 0;
-                });
-                
-                // Draw balls
-                this.balls.forEach(ball => {
-                    // Draw trail
-                    this.ctx.strokeStyle = ball.color;
-                    this.ctx.lineWidth = 2;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.beginPath();
-                    ball.trail.forEach((point, index) => {
-                        if (index === 0) {
-                            this.ctx.moveTo(point.x, point.y);
-                        } else {
-                            this.ctx.lineTo(point.x, point.y);
-                        }
-                    });
-                    this.ctx.stroke();
-                    this.ctx.globalAlpha = 1;
-                    
-                    // Draw ball
-                    this.ctx.fillStyle = ball.color;
-                    this.ctx.shadowColor = ball.color;
-                    this.ctx.shadowBlur = 15;
-                    this.ctx.beginPath();
-                    this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    this.ctx.shadowBlur = 0;
-                });
-                
-                // Draw multiplier slots (green boxes)
-                this.ctx.strokeStyle = '#00ff88';
-                this.ctx.lineWidth = 2;
-                this.ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
-                this.multipliers.forEach(multiplier => {
-                    // Draw green box
-                    this.ctx.fillRect(
-                        multiplier.x - multiplier.width / 2,
-                        multiplier.y - 15,
-                        multiplier.width,
-                        30
-                    );
-                    this.ctx.strokeRect(
-                        multiplier.x - multiplier.width / 2,
-                        multiplier.y - 15,
-                        multiplier.width,
-                        30
-                    );
-                    
-                    // Draw multiplier text inside the box
-                    this.ctx.fillStyle = '#ffffff';
-                    this.ctx.font = 'bold 16px Arial';
-                    this.ctx.textAlign = 'center';
-                    this.ctx.textBaseline = 'middle';
-                    this.ctx.fillText(multiplier.value + 'x', multiplier.x, multiplier.y);
-                    this.ctx.fillStyle = 'rgba(0, 255, 136, 0.1)'; // Reset for next iteration
-                });
-            }
-            
-            update() {
-                // Update balls
-                for (let i = this.balls.length - 1; i >= 0; i--) {
-                    const ball = this.balls[i];
-                    const result = this.updateBall(ball);
-                    
-                    if (result) {
-                        // Ball reached bottom
-                        this.balls.splice(i, 1);
-                        return result;
-                    }
-                }
-                
-                return null;
-            }
-            
-            startAnimation() {
-                const animate = () => {
-                    const result = this.update();
-                    this.draw();
-                    
-                    if (result) {
-                        this.showResult(result);
-                    }
-                    
-                    // Keep animation running to show pins even when no balls
-                    this.animationId = requestAnimationFrame(animate);
-                };
-                
-                this.animationId = requestAnimationFrame(animate);
-            }
-            
-            stopAnimation() {
-                if (this.animationId) {
-                    cancelAnimationFrame(this.animationId);
-                    this.animationId = null;
-                }
-            }
-            
-            showResult(result) {
-                const betAmount = parseFloat(document.getElementById('betAmount').value);
-                const winnings = betAmount * result.multiplier;
-                
-                // Stop the game
-                this.isRunning = false;
-                
-                // Add winnings to balance
-                addWinnings(winnings);
-                
-                // Create result display
-                const resultDisplay = document.createElement('div');
-                resultDisplay.className = 'plinko-result show';
-                resultDisplay.innerHTML = `
-                    <div class="result-content">
-                        <div class="result-title">🎉 Plinko Result!</div>
-                        <div class="result-details">
-                            <div class="result-item">
-                                <span class="result-label">Bet:</span>
-                                <span class="result-value">$${betAmount.toFixed(2)}</span>
+            setTimeout(() => {
+                hideLoadingScreen();
+                showGameModal('Hole.io', gameLibrary.find(game => game.id === 'hole-io').embedCode);
+            }, 1000);
+        }
+
+        function showGameModal(title, embedCode) {
+            // Create modal if it doesn't exist
+            let modal = document.getElementById('gameModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'gameModal';
+                modal.className = 'game-modal';
+                modal.innerHTML = `
+                    <div class="game-modal-content">
+                        <div class="game-modal-header">
+                            <h2 class="game-modal-title">${title}</h2>
+                            <button class="game-modal-close" onclick="closeGameModal()">×</button>
                         </div>
-                            <div class="result-item">
-                                <span class="result-label">Multiplier:</span>
-                                <span class="result-value multiplier-${result.multiplier >= 5 ? 'high' : result.multiplier >= 1 ? 'medium' : 'low'}">${result.multiplier}x</span>
-                            </div>
-                            <div class="result-item">
-                                <span class="result-label">Winnings:</span>
-                                <span class="result-value winnings">+$${winnings.toFixed(2)}</span>
-                            </div>
+                        <div class="game-modal-body" id="gameModalBody">
+                            <!-- Game content will be inserted here -->
                         </div>
                     </div>
                 `;
-                
-                // Add to plinko game area
-                const plinkoGameArea = document.querySelector('.plinko-game-area');
-                plinkoGameArea.appendChild(resultDisplay);
-                
-                // Remove result after 3 seconds
-                setTimeout(() => {
-                    resultDisplay.classList.add('hide');
-                    setTimeout(() => {
-                        if (resultDisplay.parentNode) {
-                            resultDisplay.parentNode.removeChild(resultDisplay);
-                        }
-                    }, 300);
-                }, 3000);
-                
-                // Re-enable play button
-                const playButton = document.getElementById('playButton');
-                playButton.disabled = false;
-                playButton.textContent = 'Play';
-            }
-        }
-        
-        // Global Plinko game instance
-        let plinkoGame = null;
-        
-        // Plinko Game Functions
-        function openPlinkoGame() {
-            const plinkoFullscreen = document.getElementById('plinkoFullscreen');
-            const canvas = document.getElementById('plinkoCanvas');
-            
-            plinkoFullscreen.classList.add('active');
-            updateBalanceDisplay();
-            
-            // Initialize Plinko game
-            plinkoGame = new PlinkoGame();
-            plinkoGame.init(canvas);
-            initializePlinkoBoard();
-        }
-        
-        function closePlinkoGame() {
-            const plinkoFullscreen = document.getElementById('plinkoFullscreen');
-            plinkoFullscreen.classList.remove('active');
-            
-            if (plinkoGame) {
-                plinkoGame.stopAnimation();
-                plinkoGame = null;
-            }
-        }
-        
-        function initializePlinkoBoard() {
-            if (plinkoGame) {
-                plinkoGame.setupBoard();
-            }
-        }
-        
-        function adjustAmount(multiplier) {
-            const betAmount = document.getElementById('betAmount');
-            const currentAmount = parseFloat(betAmount.value);
-            betAmount.value = (currentAmount * multiplier).toFixed(2);
-        }
-        
-        function playPlinko() {
-            const playButton = document.getElementById('playButton');
-            const betAmount = parseFloat(document.getElementById('betAmount').value);
-            
-            if (betAmount <= 0) {
-                alert('Please enter a valid bet amount!');
-                return;
+                document.body.appendChild(modal);
             }
             
-            // Check if player has enough balance
-            if (!deductBet(betAmount)) {
-                alert('Insufficient balance!');
-                return;
-            }
+            // Update modal content
+            document.querySelector('.game-modal-title').textContent = title;
+            document.getElementById('gameModalBody').innerHTML = embedCode;
             
-            playButton.disabled = true;
-            playButton.textContent = 'Playing...';
-            
-            // Drop ball
-            if (plinkoGame) {
-                console.log('Dropping ball...');
-                plinkoGame.isRunning = true;
-                plinkoGame.dropBall();
-            } else {
-                console.error('Plinko game not initialized!');
-                alert('Game not initialized. Please try again.');
-                playButton.disabled = false;
-                playButton.textContent = 'Play';
-            }
-        }
-        
-        // Plinko Preview Animation
-        class PlinkoPreview {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.pins = [];
-                this.balls = [];
-                this.animationId = null;
-                this.width = 300;
-                this.height = 120;
-                this.pinRadius = 2;
-                this.ballRadius = 3;
-                this.gravity = 0.2;
-                this.friction = 0.98;
-                this.bounce = 0.7;
-                this.setupPreview();
-            }
-            
-            setupPreview() {
-                // Create smaller triangular pin arrangement for preview
-                const pinSpacing = 20;
-                const startY = 20;
-                const centerX = this.width / 2;
-                const rows = 4;
-                
-                for (let row = 0; row < rows; row++) {
-                    const pinsInRow = row + 1;
-                    const rowWidth = (pinsInRow - 1) * pinSpacing;
-                    const startX = centerX - rowWidth / 2;
-                    
-                    for (let col = 0; col < pinsInRow; col++) {
-                        const x = startX + col * pinSpacing;
-                        const y = startY + row * pinSpacing;
-                        
-                        this.pins.push({
-                            x: x,
-                            y: y,
-                            radius: this.pinRadius
-                        });
-                    }
-                }
-            }
-            
-            dropBall() {
-                const ball = {
-                    x: this.width / 2 + (Math.random() - 0.5) * 10,
-                    y: 10,
-                    vx: (Math.random() - 0.5) * 1,
-                    vy: 0,
-                    radius: this.ballRadius,
-                    color: this.getRandomBallColor(),
-                    trail: []
-                };
-                
-                this.balls.push(ball);
-            }
-            
-            getRandomBallColor() {
-                const colors = ['#00ff88', '#ff6b6b', '#4ecdc4', '#45b7d1'];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-            
-            updateBall(ball) {
-                // Apply gravity
-                ball.vy += this.gravity;
-                
-                // Apply friction
-                ball.vx *= this.friction;
-                ball.vy *= this.friction;
-                
-                // Update position
-                ball.x += ball.vx;
-                ball.y += ball.vy;
-                
-                // Add to trail
-                ball.trail.push({ x: ball.x, y: ball.y });
-                if (ball.trail.length > 5) {
-                    ball.trail.shift();
-                }
-                
-                // Check pin collisions
-                this.checkPinCollisions(ball);
-                
-                // Check wall collisions
-                this.checkWallCollisions(ball);
-                
-                // Check if ball reached bottom
-                if (ball.y > this.height - 20) {
-                    return true; // Ball finished
-                }
-                
-                return false;
-            }
-            
-            checkPinCollisions(ball) {
-                this.pins.forEach(pin => {
-                    const dx = ball.x - pin.x;
-                    const dy = ball.y - pin.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < ball.radius + pin.radius) {
-                        // Collision detected
-                        const angle = Math.atan2(dy, dx);
-                        const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-                        
-                        // Calculate reflection
-                        const newAngle = angle + Math.PI + (Math.random() - 0.5) * 0.3;
-                        const newSpeed = speed * this.bounce;
-                        
-                        ball.vx = Math.cos(newAngle) * newSpeed;
-                        ball.vy = Math.sin(newAngle) * newSpeed;
-                        
-                        // Move ball away from pin
-                        const overlap = ball.radius + pin.radius - distance;
-                        ball.x += Math.cos(angle) * overlap;
-                        ball.y += Math.sin(angle) * overlap;
-                    }
-                });
-            }
-            
-            checkWallCollisions(ball) {
-                if (ball.x - ball.radius < 0) {
-                    ball.x = ball.radius;
-                    ball.vx = Math.abs(ball.vx) * this.bounce;
-                }
-                if (ball.x + ball.radius > this.width) {
-                    ball.x = this.width - ball.radius;
-                    ball.vx = -Math.abs(ball.vx) * this.bounce;
-                }
-            }
-            
-            draw() {
-                // Clear canvas with transparent background
-                this.ctx.clearRect(0, 0, this.width, this.height);
-                
-                // Draw pins
-                this.ctx.fillStyle = '#ffffff';
-                this.pins.forEach(pin => {
-                    this.ctx.beginPath();
-                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    
-                    // Add glow effect
-                    this.ctx.shadowColor = '#ffffff';
-                    this.ctx.shadowBlur = 5;
-                    this.ctx.beginPath();
-                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    this.ctx.shadowBlur = 0;
-                });
-                
-                // Draw balls
-                this.balls.forEach(ball => {
-                    // Draw trail
-                    this.ctx.strokeStyle = ball.color;
-                    this.ctx.lineWidth = 1;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.beginPath();
-                    ball.trail.forEach((point, index) => {
-                        if (index === 0) {
-                            this.ctx.moveTo(point.x, point.y);
-                        } else {
-                            this.ctx.lineTo(point.x, point.y);
-                        }
-                    });
-                    this.ctx.stroke();
-                    this.ctx.globalAlpha = 1;
-                    
-                    // Draw ball
-                    this.ctx.fillStyle = ball.color;
-                    this.ctx.shadowColor = ball.color;
-                    this.ctx.shadowBlur = 8;
-                    this.ctx.beginPath();
-                    this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-                    this.ctx.fill();
-                    this.ctx.shadowBlur = 0;
-                });
-            }
-            
-            update() {
-                // Update balls
-                for (let i = this.balls.length - 1; i >= 0; i--) {
-                    const ball = this.balls[i];
-                    const finished = this.updateBall(ball);
-                    
-                    if (finished) {
-                        this.balls.splice(i, 1);
-                    }
-                }
-            }
-            
-            animate() {
-                this.update();
-                this.draw();
-                this.animationId = requestAnimationFrame(() => this.animate());
-            }
-            
-            start() {
-                this.animate();
-                // Drop a ball every 2 seconds
-                this.ballInterval = setInterval(() => {
-                    this.dropBall();
-                }, 2000);
-            }
-            
-            stop() {
-                if (this.animationId) {
-                    cancelAnimationFrame(this.animationId);
-                    this.animationId = null;
-                }
-                if (this.ballInterval) {
-                    clearInterval(this.ballInterval);
-                    this.ballInterval = null;
-                }
-            }
-        }
-        
-        let plinkoPreview = null;
-        
-        function initializePlinkoPreview() {
-            const canvas = document.getElementById('plinkoPreviewCanvas');
-            if (canvas && !plinkoPreview) {
-                plinkoPreview = new PlinkoPreview(canvas);
-                plinkoPreview.start();
-            }
-        }
-        
-        // Gambling Games Library Data
-        const gambaLibrary = [
-            {
-                id: 'gamba-1',
-                title: 'Plinko',
-                description: 'Drop the ball and watch it bounce through pegs to land on multipliers. Professional Plinko game with real physics!',
-                icon: '🎯',
-                status: 'Available',
-                category: 'Plinko',
-                functional: true
-            },
-            {
-                id: 'gamba-2',
-                title: 'Poker Palace',
-                description: 'Test your poker skills in our virtual casino. Play against AI opponents with virtual chips.',
-                icon: '🃏',
-                status: 'Under Maintenance',
-                category: 'Card Games'
-            },
-            {
-                id: 'gamba-3',
-                title: 'Roulette Royale',
-                description: 'Place your bets on red, black, or numbers in this classic roulette game with virtual currency.',
-                icon: '🎲',
-                status: 'Under Maintenance',
-                category: 'Table Games'
-            },
-            {
-                id: 'gamba-4',
-                title: 'Blackjack Blitz',
-                description: 'Beat the dealer in this fast-paced blackjack game. Perfect for quick gaming sessions.',
-                icon: '🂡',
-                status: 'Under Maintenance',
-                category: 'Card Games'
-            },
-            {
-                id: 'gamba-5',
-                title: 'Bingo Bonanza',
-                description: 'Join the bingo hall and mark your numbers for a chance to win virtual prizes!',
-                icon: '🎯',
-                status: 'Under Maintenance',
-                category: 'Bingo'
-            },
-            {
-                id: 'gamba-6',
-                title: 'Dice Dreams',
-                description: 'Roll the dice and watch your virtual fortune grow in this exciting dice game.',
-                icon: '🎲',
-                status: 'Under Maintenance',
-                category: 'Dice Games'
-            },
-            {
-                id: 'gamba-7',
-                title: 'Lottery Lotto',
-                description: 'Pick your lucky numbers and see if you can win the virtual jackpot!',
-                icon: '🎫',
-                status: 'Under Maintenance',
-                category: 'Lottery'
-            },
-            {
-                id: 'gamba-8',
-                title: 'Scratch & Win',
-                description: 'Scratch off virtual tickets to reveal instant prizes and bonus rewards.',
-                icon: '🎟️',
-                status: 'Under Maintenance',
-                category: 'Instant Win'
-            },
-            {
-                id: 'gamba-9',
-                title: 'Wheel of Fortune',
-                description: 'Spin the wheel and land on virtual prizes in this exciting game of chance.',
-                icon: '🎡',
-                status: 'Under Maintenance',
-                category: 'Wheel Games'
-            }
-        ];
-        
-        function populateGambaLibrary() {
-            const gamesGrid = document.getElementById('gamesGrid');
-            const libraryTitle = document.querySelector('.library-header h1');
-            const librarySubtitle = document.querySelector('.library-header p');
-            const backButton = document.querySelector('.back-button');
-            const libraryBalance = document.getElementById('libraryBalance');
-            
-            // Update header for Gamba library
-            libraryTitle.textContent = '🎰 Gamba Games 🎰';
-            librarySubtitle.textContent = 'Ethical gambling games with in-game currency only';
-            backButton.textContent = '← Back';
-            libraryBalance.classList.add('gamba-balance');
-            
-            // Update library balance display
-            updateLibraryBalanceDisplay();
-            
-            gamesGrid.innerHTML = '';
-            
-            gambaLibrary.forEach((game, index) => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                if (game.functional) {
-                    gameCard.classList.add('functional');
-                } else {
-                    gameCard.classList.add('empty');
-                }
-                gameCard.style.transitionDelay = `${index * 0.1}s`;
-                
-                // Create content based on game status
-                let gameContent;
-                if (game.functional) {
-                    // Functional games show full content
-                    let iconHTML;
-                    if (game.id === 'gamba-1') {
-                        iconHTML = `
-                            <div class="plinko-preview" id="plinkoPreview">
-                                <div class="plinko-preview-static">
-                                    <div style="font-size: 3rem;">🎯</div>
-                                </div>
-                                <div class="plinko-preview-animated">
-                                    <canvas class="plinko-preview-canvas" id="plinkoPreviewCanvas" width="300" height="120"></canvas>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        iconHTML = `<div class="game-icon">${game.icon}</div>`;
-                    }
-                    
-                    gameContent = `
-                        ${iconHTML}
-                        <h3 class="game-title">${game.title}</h3>
-                        <p class="game-description">${game.description}</p>
-                    `;
-                } else {
-                    // Under maintenance games show only "?"
-                    gameContent = `
-                        <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
-                        <div class="game-status">${game.status}</div>
-                    `;
-                }
-                
-                gameCard.innerHTML = gameContent;
-                
-                gameCard.addEventListener('click', () => {
-                    if (game.functional && game.id === 'gamba-1') {
-                        openPlinkoGame();
-                    } else {
-                        alert('This game is currently under maintenance. Please check back later!');
-                    }
-                });
-                
-                gamesGrid.appendChild(gameCard);
-                
-                // Initialize Plinko preview animation
-                if (game.id === 'gamba-1' && game.functional) {
-                    setTimeout(() => {
-                        initializePlinkoPreview();
-                    }, index * 100 + 500);
-                }
-            });
-        }
-        
-        function populateGameLibrary() {
-            const gamesGrid = document.getElementById('gamesGrid');
-            const libraryTitle = document.querySelector('.library-header h1');
-            const librarySubtitle = document.querySelector('.library-header p');
-            const backButton = document.querySelector('.back-button');
-            const libraryBalance = document.getElementById('libraryBalance');
-            
-            // Reset header for normal games
-            libraryTitle.textContent = 'Game Library';
-            librarySubtitle.textContent = 'Choose from our collection of games';
-            backButton.textContent = '← Back';
-            libraryBalance.classList.remove('gamba-balance');
-            
-            // Update library balance display
-            updateLibraryBalanceDisplay();
-            
-            gamesGrid.innerHTML = '';
-            
-            gameLibrary.forEach((game, index) => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card empty'; // All normal games are currently under maintenance
-                gameCard.style.transitionDelay = `${index * 0.1}s`;
-                
-                // All normal games are under maintenance, so show only "?"
-                gameCard.innerHTML = `
-                    <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
-                    <div class="game-status">${game.status}</div>
-                `;
-                
-                gameCard.addEventListener('click', () => {
-                    if (game.status === 'Available') {
-                        launchGame(game.id);
-                    } else {
-                        alert('This game is currently under maintenance. Please check back later!');
-                    }
-                });
-                
-                gamesGrid.appendChild(gameCard);
-            });
-        }
-        
-        function animateGameCards() {
-            const gameCards = document.querySelectorAll('.game-card');
-            gameCards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('animate-in');
-                }, index * 100);
-            });
-        }
-        
-        function launchGame(gameId) {
-            // Add launch animation
-            const gameCard = document.querySelector(`[onclick="launchGame('${gameId}')"]`);
-            if (gameCard) {
-                gameCard.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    gameCard.style.transform = 'scale(1)';
-                }, 150);
-            }
-            
-            // Show maintenance message
-            alert('This game is currently under maintenance. Please check back later!');
+            // Show modal
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        // Dollar Sign Jumping Effect
-        let dollarSignInterval = null;
-        let playerBalance = 1000; // Starting balance
-        
-        function startDollarJumpEffect() {
-            const gambaButton = document.querySelector('.gamba-button');
-            if (!gambaButton) return;
-            
-            const createDollarSigns = () => {
-                const rect = gambaButton.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                // Create 4-5 dollar signs
-                const numDollarSigns = 4 + Math.floor(Math.random() * 2); // 4 or 5
-                
-                for (let i = 0; i < numDollarSigns; i++) {
-                    const dollarSign = document.createElement('div');
-                    dollarSign.className = 'dollar-jump';
-                    dollarSign.textContent = '$';
-                    
-                    // Random position within button area
-                    const randomX = rect.left + Math.random() * rect.width;
-                    const randomY = rect.top + Math.random() * rect.height;
-                    
-                    dollarSign.style.left = randomX + 'px';
-                    dollarSign.style.top = randomY + 'px';
-                    
-                    // Random rotation for each dollar sign
-                    const randomRotation = Math.random() * 360;
-                    dollarSign.style.setProperty('--random-rotation', randomRotation + 'deg');
-                    
-                    // Add slight delay for each dollar sign
-                    dollarSign.style.animationDelay = (i * 0.1) + 's';
-                    
-                    document.body.appendChild(dollarSign);
-                    
-                    // Remove the element after animation
-                    setTimeout(() => {
-                        if (dollarSign.parentNode) {
-                            dollarSign.parentNode.removeChild(dollarSign);
-                        }
-                    }, 2000 + (i * 100));
-                }
-            };
-            
-            // Create first batch of dollar signs immediately
-            createDollarSigns();
-            
-            // Continue creating dollar signs every 2.1 seconds (right after they disappear)
-            dollarSignInterval = setInterval(() => {
-                if (document.querySelector('.gamba-button')) {
-                    createDollarSigns();
-                } else {
-                    clearInterval(dollarSignInterval);
-                }
-            }, 2100);
-        }
-        
-        function stopDollarJumpEffect() {
-            if (dollarSignInterval) {
-                clearInterval(dollarSignInterval);
-                dollarSignInterval = null;
-            }
-        }
-        
-        // Slot Machine Animation
-        function startSlotMachine() {
-            const reels = ['reel1', 'reel2', 'reel3'];
-            const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            
-            const spinReel = (reelId, delay) => {
-                const reel = document.getElementById(reelId);
-                if (!reel) return;
-                
-                // Clear any existing classes
-                reel.classList.remove('spinning', 'winning');
-                reel.classList.add('spinning');
-                
-                // Show random numbers while spinning
-                const spinInterval = setInterval(() => {
-                    reel.textContent = numbers[Math.floor(Math.random() * numbers.length)];
-                }, 80);
-                
-                // Stop spinning after delay and show 7
+        function closeGameModal() {
+            const modal = document.getElementById('gameModal');
+            if (modal) {
+                modal.classList.remove('active');
                 setTimeout(() => {
-                    clearInterval(spinInterval);
-                    reel.classList.remove('spinning');
-                    reel.textContent = '7';
-                    
-                    // Add winning highlight after a brief pause
-                    setTimeout(() => {
-                        reel.classList.add('winning');
-                        
-                        // Remove winning class after animation
-                        setTimeout(() => {
-                            reel.classList.remove('winning');
-                        }, 600);
-                    }, 100);
-                }, delay);
-            };
-            
-            // Start spinning with staggered delays
-            spinReel('reel1', 1000);
-            spinReel('reel2', 1500);
-            spinReel('reel3', 2000);
-            
-            // Loop the animation
-            setTimeout(() => {
-                startSlotMachine();
-            }, 5000); // Increased delay for better timing
-        }
-
-        // Initialize
-        new EnhancedParticleSystem();
-        
-        // Start dollar jump effect and slot machine when category page becomes active
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    const categoryPage = document.getElementById('categoryPage');
-                    if (categoryPage && categoryPage.classList.contains('active')) {
-                        startDollarJumpEffect();
-                        startSlotMachine();
-                    }
-                }
-            });
-        });
-        
-        const categoryPage = document.getElementById('categoryPage');
-        if (categoryPage) {
-            observer.observe(categoryPage, { attributes: true, attributeFilter: ['class'] });
+                    modal.style.display = 'none';
+                    document.getElementById('gameModalBody').innerHTML = '';
+                }, 300);
+            }
         }
         
     </script>
