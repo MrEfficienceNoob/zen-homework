@@ -784,9 +784,422 @@
             background: transparent;
         }
         
+        /* Plinko Game Modal */
+        .plinko-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .plinko-modal.active {
+            display: flex;
+        }
+        
+        .plinko-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+        }
+        
+        .plinko-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .plinko-header h2 {
+            color: #00ff88;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            padding: 8px 15px;
+            border-radius: 15px;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .balance-label {
+            color: #00ff88;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .balance-amount {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+        
+        .balance-currency {
+            color: #ffd700;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        .close-plinko {
+            background: transparent;
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-plinko:hover {
+            background: #ff4444;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+        
+        .plinko-game {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .plinko-controls {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group label {
+            display: block;
+            color: #00ff88;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .amount-input {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 8px;
+            gap: 8px;
+        }
+        
+        .coin-icon {
+            font-size: 1.2rem;
+        }
+        
+        .amount-input input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+        }
+        
+        .amount-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .amount-buttons button {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .amount-buttons button:hover {
+            background: linear-gradient(135deg, #00ff88, #00ffaa);
+            transform: scale(1.05);
+        }
+        
+        .control-group select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            color: #fff;
+            padding: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .control-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        
+        .plinko-controls .play-button {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .plinko-controls .play-button:hover {
+            background: linear-gradient(135deg, #00ff88, #00ffaa);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+        
+        .plinko-controls .play-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .plinko-board {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(26, 26, 46, 0.8));
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #plinkoCanvas {
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            margin-bottom: 20px;
+        }
+        
+        .multipliers {
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .multiplier {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            min-width: 40px;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+            border: 1px solid #00ff88;
+            transition: all 0.3s ease;
+        }
+        
+        .multiplier.high {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.3);
+            border-color: #ff4444;
+        }
+        
+        .multiplier.medium {
+            background: linear-gradient(135deg, #ffa726, #ff8f00);
+            color: #000;
+            box-shadow: 0 0 8px rgba(255, 167, 38, 0.3);
+            border-color: #ffa726;
+        }
+        
+        .multiplier.low {
+            background: linear-gradient(135deg, #66bb6a, #4caf50);
+            color: #000;
+            box-shadow: 0 0 8px rgba(102, 187, 106, 0.3);
+            border-color: #66bb6a;
+        }
+        
+        .multiplier:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+        
+        /* Plinko Result Display */
+        .plinko-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+        
+        .plinko-result.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .plinko-result.hide {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+        
+        .result-title {
+            color: #00ff88;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .result-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+        
+        .result-label {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .result-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .result-value.winnings {
+            color: #00ff88;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+        
+        .multiplier-high {
+            color: #ff4444;
+        }
+        
+        .multiplier-medium {
+            color: #ffa726;
+        }
+        
+        .multiplier-low {
+            color: #66bb6a;
+        }
+        
         /* Plinko Preview Animation */
+        .plinko-preview {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
         
+        .plinko-preview:hover {
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
         
+        .plinko-preview-static {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        
+        .plinko-preview-animated {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .plinko-preview:hover .plinko-preview-static {
+            opacity: 0;
+        }
+        
+        .plinko-preview:hover .plinko-preview-animated {
+            opacity: 1;
+        }
+        
+        .plinko-preview-canvas {
+            width: 100%;
+            height: 100%;
+        }
         
         .plinko-live-feed {
             flex: 1;
@@ -999,6 +1412,58 @@
                 </div>
             </div>
     
+    <!-- Plinko Game Modal -->
+    <div class="plinko-modal" id="plinkoModal">
+        <div class="plinko-container">
+            <div class="plinko-header">
+                <h2>🎯 Plinko Game</h2>
+                <div class="balance-display">
+                    <span class="balance-label">Balance:</span>
+                    <span class="balance-amount" id="balanceAmount">1,000</span>
+                    <span class="balance-currency">₿</span>
+                </div>
+                <button class="close-plinko" onclick="closePlinkoGame()">×</button>
+            </div>
+            <div class="plinko-game">
+                <div class="plinko-controls">
+                    <div class="control-group">
+                        <label>Amount</label>
+                        <div class="amount-input">
+                            <span class="coin-icon">💰</span>
+                            <input type="number" id="betAmount" value="1.00" min="0.01" step="0.01">
+                            <div class="amount-buttons">
+                                <button onclick="adjustAmount(0.5)">½</button>
+                                <button onclick="adjustAmount(2)">2×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Risk</label>
+                        <select id="riskLevel" onchange="initializePlinkoBoard()">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Rows</label>
+                        <select id="rowCount" onchange="initializePlinkoBoard()">
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+                    <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
+                </div>
+                <div class="plinko-board" id="plinkoBoard">
+                    <canvas id="plinkoCanvas" width="400" height="500"></canvas>
+                    <div class="multipliers" id="multipliers"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Enhanced Particle System with Hover-Based Connections
@@ -1417,6 +1882,762 @@
             }
         }
         
+        function updateBalanceDisplay() {
+            const balanceElement = document.getElementById('balanceAmount');
+            if (balanceElement) {
+                balanceElement.textContent = playerBalance.toLocaleString();
+            }
+        }
+        
+        function deductBet(amount) {
+            if (playerBalance >= amount) {
+                playerBalance -= amount;
+                updateBalanceDisplay();
+                updateLibraryBalanceDisplay();
+                return true;
+            }
+            return false;
+        }
+        
+        function addWinnings(amount) {
+            playerBalance += amount;
+            updateBalanceDisplay();
+            updateLibraryBalanceDisplay();
+        }
+        
+        // Plinko Game Implementation
+        class PlinkoGame {
+            constructor() {
+                this.canvas = null;
+                this.ctx = null;
+                this.pins = [];
+                this.balls = [];
+                this.multipliers = [];
+                this.animationId = null;
+                this.isRunning = false;
+                this.boardWidth = 400;
+                this.boardHeight = 400;
+                this.pinRadius = 4;
+                this.ballRadius = 6;
+                this.gravity = 0.3;
+                this.friction = 0.98;
+                this.bounce = 0.7;
+            }
+            
+            init(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.setupBoard();
+                this.startAnimation();
+            }
+            
+            setupBoard() {
+                const rows = parseInt(document.getElementById('rowCount').value);
+                const riskLevel = document.getElementById('riskLevel').value;
+                
+                // Clear existing pins
+                this.pins = [];
+                
+                // Create triangular pin arrangement
+                const pinSpacing = 35;
+                const startY = 50;
+                const centerX = this.boardWidth / 2;
+                
+                for (let row = 0; row < rows; row++) {
+                    const pinsInRow = row + 1;
+                    const rowWidth = (pinsInRow - 1) * pinSpacing;
+                    const startX = centerX - rowWidth / 2;
+                    
+                    for (let col = 0; col < pinsInRow; col++) {
+                        const x = startX + col * pinSpacing;
+                        const y = startY + row * pinSpacing;
+                        
+                        this.pins.push({
+                            x: x,
+                            y: y,
+                            radius: this.pinRadius
+                        });
+                    }
+                }
+                
+                // Setup multipliers based on risk level
+                this.setupMultipliers(riskLevel, rows);
+            }
+            
+            setupMultipliers(riskLevel, rows) {
+                this.multipliers = [];
+                const slotCount = rows + 1;
+                const slotWidth = this.boardWidth / slotCount;
+                
+                let multiplierValues = [];
+                
+                if (riskLevel === 'low') {
+                    // Low risk: mostly positive multipliers
+                    multiplierValues = this.generateLowRiskMultipliers(slotCount);
+                } else if (riskLevel === 'medium') {
+                    // Medium risk: balanced
+                    multiplierValues = this.generateMediumRiskMultipliers(slotCount);
+                } else {
+                    // High risk: extreme multipliers
+                    multiplierValues = this.generateHighRiskMultipliers(slotCount);
+                }
+                
+                for (let i = 0; i < slotCount; i++) {
+                    const x = i * slotWidth + slotWidth / 2;
+                    const y = this.boardHeight - 30;
+                    
+                    this.multipliers.push({
+                        x: x,
+                        y: y,
+                        width: slotWidth - 2,
+                        value: multiplierValues[i],
+                        index: i
+                    });
+                }
+                
+                this.updateMultiplierDisplay();
+            }
+            
+            generateLowRiskMultipliers(count) {
+                const multipliers = [];
+                const center = Math.floor(count / 2);
+                
+                for (let i = 0; i < count; i++) {
+                    const distance = Math.abs(i - center);
+                    if (distance === 0) {
+                        multipliers.push(1.0);
+                    } else if (distance === 1) {
+                        multipliers.push(1.5);
+                    } else if (distance === 2) {
+                        multipliers.push(2.0);
+                    } else if (distance === 3) {
+                        multipliers.push(3.0);
+                    } else {
+                        multipliers.push(5.0);
+                    }
+                }
+                
+                return multipliers;
+            }
+            
+            generateMediumRiskMultipliers(count) {
+                const multipliers = [];
+                const center = Math.floor(count / 2);
+                
+                for (let i = 0; i < count; i++) {
+                    const distance = Math.abs(i - center);
+                    if (distance === 0) {
+                        multipliers.push(0.5);
+                    } else if (distance === 1) {
+                        multipliers.push(1.0);
+                    } else if (distance === 2) {
+                        multipliers.push(2.0);
+                    } else if (distance === 3) {
+                        multipliers.push(5.0);
+                    } else if (distance === 4) {
+                        multipliers.push(10.0);
+                    } else {
+                        multipliers.push(20.0);
+                    }
+                }
+                
+                return multipliers;
+            }
+            
+            generateHighRiskMultipliers(count) {
+                const multipliers = [];
+                const center = Math.floor(count / 2);
+                
+                for (let i = 0; i < count; i++) {
+                    const distance = Math.abs(i - center);
+                    if (distance === 0) {
+                        multipliers.push(0.2);
+                    } else if (distance === 1) {
+                        multipliers.push(0.5);
+                    } else if (distance === 2) {
+                        multipliers.push(1.0);
+                    } else if (distance === 3) {
+                        multipliers.push(2.0);
+                    } else if (distance === 4) {
+                        multipliers.push(5.0);
+                    } else if (distance === 5) {
+                        multipliers.push(10.0);
+                    } else if (distance === 6) {
+                        multipliers.push(25.0);
+                    } else if (distance === 7) {
+                        multipliers.push(50.0);
+                    } else {
+                        multipliers.push(100.0);
+                    }
+                }
+                
+                return multipliers;
+            }
+            
+            updateMultiplierDisplay() {
+                const multipliersContainer = document.getElementById('multipliers');
+                multipliersContainer.innerHTML = '';
+                
+                this.multipliers.forEach(multiplier => {
+                    const element = document.createElement('div');
+                    element.className = 'multiplier';
+                    element.textContent = multiplier.value + 'x';
+                    
+                    // Add appropriate class based on multiplier value
+                    if (multiplier.value >= 5) {
+                        element.classList.add('high');
+                    } else if (multiplier.value >= 1) {
+                        element.classList.add('medium');
+                    } else {
+                        element.classList.add('low');
+                    }
+                    
+                    multipliersContainer.appendChild(element);
+                });
+            }
+            
+            dropBall() {
+                const ball = {
+                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 20,
+                    y: 20,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: 0,
+                    radius: this.ballRadius,
+                    color: this.getRandomBallColor(),
+                    trail: []
+                };
+                
+                this.balls.push(ball);
+            }
+            
+            getRandomBallColor() {
+                const colors = ['#00ff88', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            updateBall(ball) {
+                // Apply gravity
+                ball.vy += this.gravity;
+                
+                // Apply friction
+                ball.vx *= this.friction;
+                ball.vy *= this.friction;
+                
+                // Update position
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                
+                // Add to trail
+                ball.trail.push({ x: ball.x, y: ball.y });
+                if (ball.trail.length > 8) {
+                    ball.trail.shift();
+                }
+                
+                // Check pin collisions
+                this.checkPinCollisions(ball);
+                
+                // Check wall collisions
+                this.checkWallCollisions(ball);
+                
+                // Check if ball reached bottom
+                if (ball.y > this.boardHeight - 50) {
+                    return this.checkMultiplierCollision(ball);
+                }
+                
+                return null;
+            }
+            
+            checkPinCollisions(ball) {
+                this.pins.forEach(pin => {
+                    const dx = ball.x - pin.x;
+                    const dy = ball.y - pin.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < ball.radius + pin.radius) {
+                        // Collision detected
+                        const angle = Math.atan2(dy, dx);
+                        const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+                        
+                        // Calculate reflection
+                        const newAngle = angle + Math.PI + (Math.random() - 0.5) * 0.5;
+                        const newSpeed = speed * this.bounce;
+                        
+                        ball.vx = Math.cos(newAngle) * newSpeed;
+                        ball.vy = Math.sin(newAngle) * newSpeed;
+                        
+                        // Move ball away from pin
+                        const overlap = ball.radius + pin.radius - distance;
+                        ball.x += Math.cos(angle) * overlap;
+                        ball.y += Math.sin(angle) * overlap;
+                    }
+                });
+            }
+            
+            checkWallCollisions(ball) {
+                if (ball.x - ball.radius < 0) {
+                    ball.x = ball.radius;
+                    ball.vx = Math.abs(ball.vx) * this.bounce;
+                }
+                if (ball.x + ball.radius > this.boardWidth) {
+                    ball.x = this.boardWidth - ball.radius;
+                    ball.vx = -Math.abs(ball.vx) * this.bounce;
+                }
+            }
+            
+            checkMultiplierCollision(ball) {
+                const slotIndex = Math.floor(ball.x / (this.boardWidth / this.multipliers.length));
+                const clampedIndex = Math.max(0, Math.min(this.multipliers.length - 1, slotIndex));
+                const multiplier = this.multipliers[clampedIndex];
+                
+                return {
+                    multiplier: multiplier.value,
+                    index: clampedIndex
+                };
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                this.ctx.fillRect(0, 0, this.boardWidth, this.boardHeight);
+                
+                // Draw pins
+                this.ctx.fillStyle = '#ffffff';
+                this.pins.forEach(pin => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Add glow effect
+                    this.ctx.shadowColor = '#ffffff';
+                    this.ctx.shadowBlur = 10;
+                    this.ctx.beginPath();
+                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+                });
+                
+                // Draw balls
+                this.balls.forEach(ball => {
+                    // Draw trail
+                    this.ctx.strokeStyle = ball.color;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.globalAlpha = 0.3;
+                    this.ctx.beginPath();
+                    ball.trail.forEach((point, index) => {
+                        if (index === 0) {
+                            this.ctx.moveTo(point.x, point.y);
+                        } else {
+                            this.ctx.lineTo(point.x, point.y);
+                        }
+                    });
+                    this.ctx.stroke();
+                    this.ctx.globalAlpha = 1;
+                    
+                    // Draw ball
+                    this.ctx.fillStyle = ball.color;
+                    this.ctx.shadowColor = ball.color;
+                    this.ctx.shadowBlur = 15;
+                    this.ctx.beginPath();
+                    this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+                });
+                
+                // Draw multiplier slots
+                this.ctx.strokeStyle = '#00ff88';
+                this.ctx.lineWidth = 2;
+                this.multipliers.forEach(multiplier => {
+                    this.ctx.strokeRect(
+                        multiplier.x - multiplier.width / 2,
+                        multiplier.y - 15,
+                        multiplier.width,
+                        30
+                    );
+                });
+            }
+            
+            update() {
+                // Update balls
+                for (let i = this.balls.length - 1; i >= 0; i--) {
+                    const ball = this.balls[i];
+                    const result = this.updateBall(ball);
+                    
+                    if (result) {
+                        // Ball reached bottom
+                        this.balls.splice(i, 1);
+                        return result;
+                    }
+                }
+                
+                return null;
+            }
+            
+            startAnimation() {
+                const animate = () => {
+                    const result = this.update();
+                    this.draw();
+                    
+                    if (result) {
+                        this.showResult(result);
+                    }
+                    
+                    if (this.balls.length > 0 || this.isRunning) {
+                        this.animationId = requestAnimationFrame(animate);
+                    }
+                };
+                
+                this.animationId = requestAnimationFrame(animate);
+            }
+            
+            stopAnimation() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+            }
+            
+            showResult(result) {
+                const betAmount = parseFloat(document.getElementById('betAmount').value);
+                const winnings = betAmount * result.multiplier;
+                
+                // Add winnings to balance
+                addWinnings(winnings);
+                
+                // Create result display
+                const resultDisplay = document.createElement('div');
+                resultDisplay.className = 'plinko-result show';
+                resultDisplay.innerHTML = `
+                    <div class="result-content">
+                        <div class="result-title">🎉 Plinko Result!</div>
+                        <div class="result-details">
+                            <div class="result-item">
+                                <span class="result-label">Bet:</span>
+                                <span class="result-value">$${betAmount.toFixed(2)}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Multiplier:</span>
+                                <span class="result-value multiplier-${result.multiplier >= 5 ? 'high' : result.multiplier >= 1 ? 'medium' : 'low'}">${result.multiplier}x</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Winnings:</span>
+                                <span class="result-value winnings">+$${winnings.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add to plinko board
+                const plinkoBoard = document.getElementById('plinkoBoard');
+                plinkoBoard.appendChild(resultDisplay);
+                
+                // Remove result after 3 seconds
+                setTimeout(() => {
+                    resultDisplay.classList.add('hide');
+                    setTimeout(() => {
+                        if (resultDisplay.parentNode) {
+                            resultDisplay.parentNode.removeChild(resultDisplay);
+                        }
+                    }, 300);
+                }, 3000);
+                
+                // Re-enable play button
+                const playButton = document.getElementById('playButton');
+                playButton.disabled = false;
+                playButton.textContent = 'Play';
+            }
+        }
+        
+        // Global Plinko game instance
+        let plinkoGame = null;
+        
+        // Plinko Game Functions
+        function openPlinkoGame() {
+            const plinkoModal = document.getElementById('plinkoModal');
+            const canvas = document.getElementById('plinkoCanvas');
+            
+            plinkoModal.classList.add('active');
+            updateBalanceDisplay();
+            
+            // Initialize Plinko game
+            plinkoGame = new PlinkoGame();
+            plinkoGame.init(canvas);
+            initializePlinkoBoard();
+        }
+        
+        function closePlinkoGame() {
+            const plinkoModal = document.getElementById('plinkoModal');
+            plinkoModal.classList.remove('active');
+            
+            if (plinkoGame) {
+                plinkoGame.stopAnimation();
+                plinkoGame = null;
+            }
+        }
+        
+        function initializePlinkoBoard() {
+            if (plinkoGame) {
+                plinkoGame.setupBoard();
+            }
+        }
+        
+        function adjustAmount(multiplier) {
+            const betAmount = document.getElementById('betAmount');
+            const currentAmount = parseFloat(betAmount.value);
+            betAmount.value = (currentAmount * multiplier).toFixed(2);
+        }
+        
+        function playPlinko() {
+            const playButton = document.getElementById('playButton');
+            const betAmount = parseFloat(document.getElementById('betAmount').value);
+            
+            if (betAmount <= 0) {
+                alert('Please enter a valid bet amount!');
+                return;
+            }
+            
+            // Check if player has enough balance
+            if (!deductBet(betAmount)) {
+                alert('Insufficient balance!');
+                return;
+            }
+            
+            playButton.disabled = true;
+            playButton.textContent = 'Playing...';
+            
+            // Drop ball
+            if (plinkoGame) {
+                plinkoGame.isRunning = true;
+                plinkoGame.dropBall();
+            }
+        }
+        
+        // Plinko Preview Animation
+        class PlinkoPreview {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.pins = [];
+                this.balls = [];
+                this.animationId = null;
+                this.width = 300;
+                this.height = 120;
+                this.pinRadius = 2;
+                this.ballRadius = 3;
+                this.gravity = 0.2;
+                this.friction = 0.98;
+                this.bounce = 0.7;
+                this.setupPreview();
+            }
+            
+            setupPreview() {
+                // Create smaller triangular pin arrangement for preview
+                const pinSpacing = 20;
+                const startY = 20;
+                const centerX = this.width / 2;
+                const rows = 4;
+                
+                for (let row = 0; row < rows; row++) {
+                    const pinsInRow = row + 1;
+                    const rowWidth = (pinsInRow - 1) * pinSpacing;
+                    const startX = centerX - rowWidth / 2;
+                    
+                    for (let col = 0; col < pinsInRow; col++) {
+                        const x = startX + col * pinSpacing;
+                        const y = startY + row * pinSpacing;
+                        
+                        this.pins.push({
+                            x: x,
+                            y: y,
+                            radius: this.pinRadius
+                        });
+                    }
+                }
+            }
+            
+            dropBall() {
+                const ball = {
+                    x: this.width / 2 + (Math.random() - 0.5) * 10,
+                    y: 10,
+                    vx: (Math.random() - 0.5) * 1,
+                    vy: 0,
+                    radius: this.ballRadius,
+                    color: this.getRandomBallColor(),
+                    trail: []
+                };
+                
+                this.balls.push(ball);
+            }
+            
+            getRandomBallColor() {
+                const colors = ['#00ff88', '#ff6b6b', '#4ecdc4', '#45b7d1'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            updateBall(ball) {
+                // Apply gravity
+                ball.vy += this.gravity;
+                
+                // Apply friction
+                ball.vx *= this.friction;
+                ball.vy *= this.friction;
+                
+                // Update position
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                
+                // Add to trail
+                ball.trail.push({ x: ball.x, y: ball.y });
+                if (ball.trail.length > 5) {
+                    ball.trail.shift();
+                }
+                
+                // Check pin collisions
+                this.checkPinCollisions(ball);
+                
+                // Check wall collisions
+                this.checkWallCollisions(ball);
+                
+                // Check if ball reached bottom
+                if (ball.y > this.height - 20) {
+                    return true; // Ball finished
+                }
+                
+                return false;
+            }
+            
+            checkPinCollisions(ball) {
+                this.pins.forEach(pin => {
+                    const dx = ball.x - pin.x;
+                    const dy = ball.y - pin.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < ball.radius + pin.radius) {
+                        // Collision detected
+                        const angle = Math.atan2(dy, dx);
+                        const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+                        
+                        // Calculate reflection
+                        const newAngle = angle + Math.PI + (Math.random() - 0.5) * 0.3;
+                        const newSpeed = speed * this.bounce;
+                        
+                        ball.vx = Math.cos(newAngle) * newSpeed;
+                        ball.vy = Math.sin(newAngle) * newSpeed;
+                        
+                        // Move ball away from pin
+                        const overlap = ball.radius + pin.radius - distance;
+                        ball.x += Math.cos(angle) * overlap;
+                        ball.y += Math.sin(angle) * overlap;
+                    }
+                });
+            }
+            
+            checkWallCollisions(ball) {
+                if (ball.x - ball.radius < 0) {
+                    ball.x = ball.radius;
+                    ball.vx = Math.abs(ball.vx) * this.bounce;
+                }
+                if (ball.x + ball.radius > this.width) {
+                    ball.x = this.width - ball.radius;
+                    ball.vx = -Math.abs(ball.vx) * this.bounce;
+                }
+            }
+            
+            draw() {
+                // Clear canvas with transparent background
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                
+                // Draw pins
+                this.ctx.fillStyle = '#ffffff';
+                this.pins.forEach(pin => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Add glow effect
+                    this.ctx.shadowColor = '#ffffff';
+                    this.ctx.shadowBlur = 5;
+                    this.ctx.beginPath();
+                    this.ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+                });
+                
+                // Draw balls
+                this.balls.forEach(ball => {
+                    // Draw trail
+                    this.ctx.strokeStyle = ball.color;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.globalAlpha = 0.3;
+                    this.ctx.beginPath();
+                    ball.trail.forEach((point, index) => {
+                        if (index === 0) {
+                            this.ctx.moveTo(point.x, point.y);
+                        } else {
+                            this.ctx.lineTo(point.x, point.y);
+                        }
+                    });
+                    this.ctx.stroke();
+                    this.ctx.globalAlpha = 1;
+                    
+                    // Draw ball
+                    this.ctx.fillStyle = ball.color;
+                    this.ctx.shadowColor = ball.color;
+                    this.ctx.shadowBlur = 8;
+                    this.ctx.beginPath();
+                    this.ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+                });
+            }
+            
+            update() {
+                // Update balls
+                for (let i = this.balls.length - 1; i >= 0; i--) {
+                    const ball = this.balls[i];
+                    const finished = this.updateBall(ball);
+                    
+                    if (finished) {
+                        this.balls.splice(i, 1);
+                    }
+                }
+            }
+            
+            animate() {
+                this.update();
+                this.draw();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            start() {
+                this.animate();
+                // Drop a ball every 2 seconds
+                this.ballInterval = setInterval(() => {
+                    this.dropBall();
+                }, 2000);
+            }
+            
+            stop() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+                if (this.ballInterval) {
+                    clearInterval(this.ballInterval);
+                    this.ballInterval = null;
+                }
+            }
+        }
+        
+        let plinkoPreview = null;
+        
+        function initializePlinkoPreview() {
+            const canvas = document.getElementById('plinkoPreviewCanvas');
+            if (canvas && !plinkoPreview) {
+                plinkoPreview = new PlinkoPreview(canvas);
+                plinkoPreview.start();
+            }
+        }
+        
         // Gambling Games Library Data
         const gambaLibrary = [
             {
@@ -1424,9 +2645,9 @@
                 title: 'Plinko',
                 description: 'Drop the ball and watch it bounce through pegs to land on multipliers. Professional Plinko game with real physics!',
                 icon: '🎯',
-                status: 'Under Maintenance',
+                status: 'Available',
                 category: 'Plinko',
-                functional: false
+                functional: true
             },
             {
                 id: 'gamba-2',
@@ -1522,8 +2743,22 @@
                 }
                 gameCard.style.transitionDelay = `${index * 0.1}s`;
                 
-                // Use regular icon for all games
-                const iconHTML = `<div class="game-icon">${game.icon}</div>`;
+                // Create special preview for Plinko
+                let iconHTML;
+                if (game.id === 'gamba-1' && game.functional) {
+                    iconHTML = `
+                        <div class="plinko-preview" id="plinkoPreview">
+                            <div class="plinko-preview-static">
+                                <div style="font-size: 3rem;">🎯</div>
+                            </div>
+                            <div class="plinko-preview-animated">
+                                <canvas class="plinko-preview-canvas" id="plinkoPreviewCanvas" width="300" height="120"></canvas>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    iconHTML = `<div class="game-icon">${game.icon}</div>`;
+                }
                 
                 gameCard.innerHTML = `
                     ${iconHTML}
@@ -1533,10 +2768,21 @@
                 `;
                 
                 gameCard.addEventListener('click', () => {
-                    alert('This game is currently under maintenance. Please check back later!');
+                    if (game.functional && game.id === 'gamba-1') {
+                        openPlinkoGame();
+                    } else {
+                        alert('This game is currently under maintenance. Please check back later!');
+                    }
                 });
                 
                 gamesGrid.appendChild(gameCard);
+                
+                // Initialize Plinko preview animation
+                if (game.id === 'gamba-1' && game.functional) {
+                    setTimeout(() => {
+                        initializePlinkoPreview();
+                    }, index * 100 + 500);
+                }
             });
         }
         
