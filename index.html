@@ -1445,7 +1445,7 @@
                     <span class="balance-currency">₿</span>
                 </div>
                 <button class="close-plinko" onclick="closePlinkoGame()">×</button>
-            </div>
+                </div>
             <div class="plinko-game">
                 <div class="plinko-controls">
                     <div class="control-group">
@@ -1456,9 +1456,9 @@
                             <div class="amount-buttons">
                                 <button onclick="adjustAmount(0.5)">½</button>
                                 <button onclick="adjustAmount(2)">2×</button>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+                </div>
                     <div class="control-group">
                         <label>Risk</label>
                         <select id="riskLevel" onchange="initializePlinkoBoard()">
@@ -1466,7 +1466,7 @@
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
                         </select>
-                    </div>
+                </div>
                     <div class="control-group">
                         <label>Rows</label>
                         <select id="rowCount" onchange="initializePlinkoBoard()">
@@ -1476,9 +1476,9 @@
                             <option value="14">14</option>
                             <option value="16">16</option>
                         </select>
-                    </div>
+            </div>
                     <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
-                </div>
+        </div>
                 <div class="plinko-board" id="plinkoBoard">
                     <canvas id="plinkoCanvas" width="400" height="500"></canvas>
                     <div class="multipliers" id="multipliers"></div>
@@ -2335,7 +2335,7 @@
                             <div class="result-item">
                                 <span class="result-label">Bet:</span>
                                 <span class="result-value">$${betAmount.toFixed(2)}</span>
-                            </div>
+                        </div>
                             <div class="result-item">
                                 <span class="result-label">Multiplier:</span>
                                 <span class="result-value multiplier-${result.multiplier >= 5 ? 'high' : result.multiplier >= 1 ? 'medium' : 'low'}">${result.multiplier}x</span>
@@ -2789,7 +2789,6 @@
                         ${iconHTML}
                         <h3 class="game-title">${game.title}</h3>
                         <p class="game-description">${game.description}</p>
-                        <div class="game-status">${game.status}</div>
                     `;
                 } else {
                     // Under maintenance games show only "?"
