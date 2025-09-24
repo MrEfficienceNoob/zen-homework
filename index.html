@@ -1872,23 +1872,50 @@
         // Game Library Functions
         function populateGameLibrary() {
             const gamesGrid = document.getElementById('gamesGrid');
+            const libraryTitle = document.querySelector('.library-title');
+            const librarySubtitle = document.querySelector('.library-subtitle');
+            const backButton = document.querySelector('.back-button');
+            const libraryBalance = document.getElementById('libraryBalance');
+            
+            // Reset header for normal games
+            libraryTitle.textContent = 'Game Library';
+            librarySubtitle.textContent = 'Choose from our collection of games';
+            backButton.textContent = '← Back';
+            libraryBalance.classList.remove('gamba-balance');
+            
             gamesGrid.innerHTML = '';
             
             gameLibrary.forEach((game, index) => {
                 const gameCard = document.createElement('div');
-                gameCard.className = 'game-card empty';
+                gameCard.className = game.functional ? 'game-card functional' : 'game-card empty';
                 gameCard.style.animationDelay = `${index * 0.1}s`;
                 
-                gameCard.innerHTML = `
-                    <div class="game-icon">${game.icon}</div>
-                    <h3 class="game-title">?</h3>
-                    <p class="game-description">Under Maintenance</p>
-                    <div class="game-status">Under Maintenance</div>
-                `;
+                let gameContent;
+                if (game.functional) {
+                    gameContent = `
+                        <div class="game-icon">${game.icon}</div>
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-description">${game.description}</p>
+                    `;
+                } else {
+                    gameContent = `
+                        <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
+                        <div class="game-status">Under Maintenance</div>
+                    `;
+                }
+                
+                gameCard.innerHTML = gameContent;
                 
                 gameCard.onclick = () => {
-                    // All games are under maintenance
-                    alert('This game is currently under maintenance. Please check back later!');
+                    if (game.functional) {
+                        if (game.id === 'hole-io') {
+                            launchHoleIO();
+                        } else {
+                            alert(`Opening ${game.title}...`);
+                        }
+                    } else {
+                        alert('This game is currently under maintenance. Please check back later!');
+                    }
                 };
                 
                 gamesGrid.appendChild(gameCard);
@@ -1897,6 +1924,17 @@
 
         function populateGambaLibrary() {
             const gamesGrid = document.getElementById('gamesGrid');
+            const libraryTitle = document.querySelector('.library-title');
+            const librarySubtitle = document.querySelector('.library-subtitle');
+            const backButton = document.querySelector('.back-button');
+            const libraryBalance = document.getElementById('libraryBalance');
+            
+            // Update header for Gamba library
+            libraryTitle.textContent = '🎰 Gamba Games 🎰';
+            librarySubtitle.textContent = 'Ethical gambling games with in-game currency only';
+            backButton.textContent = '← Back';
+            libraryBalance.classList.add('gamba-balance');
+            
             gamesGrid.innerHTML = '';
             
             gambaLibrary.forEach((game, index) => {
@@ -2078,7 +2116,7 @@
             
             setTimeout(() => {
                 hideLoadingScreen();
-                document.getElementById('welcomePage').classList.remove('active');
+                document.getElementById('welcomePage').classList.add('hidden');
                 document.getElementById('categoryPage').classList.add('active');
             }, 800);
         }
@@ -2091,6 +2129,7 @@
                 document.getElementById('categoryPage').classList.remove('active');
                 document.getElementById('gameLibrary').classList.add('active');
                 populateGameLibrary();
+                animateGameCards();
             }, 800);
         }
 
@@ -2100,8 +2139,9 @@
             setTimeout(() => {
                 hideLoadingScreen();
                 document.getElementById('categoryPage').classList.remove('active');
-                document.getElementById('gameLibrary').classList.add('active');
+                document.getElementById('gameLibrary').classList.add('active', 'gamba-theme');
                 populateGambaLibrary();
+                animateGameCards();
             }, 800);
         }
 
@@ -2110,7 +2150,7 @@
             
             setTimeout(() => {
                 hideLoadingScreen();
-                document.getElementById('gameLibrary').classList.remove('active');
+                document.getElementById('gameLibrary').classList.remove('active', 'gamba-theme');
                 document.getElementById('categoryPage').classList.add('active');
             }, 600);
         }
