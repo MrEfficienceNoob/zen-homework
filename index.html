@@ -552,9 +552,6 @@
         }
         
         .library-balance {
-            position: absolute;
-            top: 30px;
-            right: 30px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -563,15 +560,13 @@
             border-radius: 20px;
             border: 2px solid #8b5cf6;
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+            margin: 20px auto;
+            width: fit-content;
         }
         
         .library-balance.gamba-balance {
             border: 3px solid #00ff88;
             box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
             padding: 15px 25px;
             font-size: 1.2rem;
         }
@@ -1134,13 +1129,13 @@
         <div class="library-header">
             <button class="back-button" onclick="closeGameLibrary()">← Back</button>
             <h1 class="library-title">Game Library</h1>
-            <p class="library-subtitle">Choose your adventure</p>
             <div class="library-balance" id="libraryBalance">
                 <span class="library-balance-label">Balance:</span>
                 <span class="library-balance-amount" id="libraryBalanceAmount">1,000</span>
                 <span class="library-balance-currency">₿</span>
-                        </div>
-                    </div>
+            </div>
+            <p class="library-subtitle">Choose your adventure</p>
+        </div>
                     
         <div class="games-container">
             <div class="games-grid" id="gamesGrid">
@@ -1448,6 +1443,8 @@
         
         function createGreenParticles() {
             const button = document.querySelector('.gamba-button');
+            if (!button || !button.offsetParent) return; // Check if button is visible
+            
             const rect = button.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
@@ -1728,7 +1725,7 @@
         // Dollar Jump Effect
         function startDollarJumpEffect() {
             const gambaButton = document.querySelector('.gamba-button');
-            if (!gambaButton) return;
+            if (!gambaButton || !gambaButton.offsetParent) return; // Check if button is visible
             
             const createDollarSign = () => {
                 const dollar = document.createElement('div');
