@@ -1945,18 +1945,19 @@
                 this.pins = [];
                 
                 // Create triangular pin arrangement for full-screen
-                const pinSpacing = 60; // Larger spacing for full-screen
-                const startY = 80;
+                // Start from row 1 (not row 0) to leave space for ball drop
+                const pinSpacing = 60;
+                const startY = 120; // Start lower to leave space for ball drop
                 const centerX = this.boardWidth / 2;
                 
-                for (let row = 0; row < rows; row++) {
-                    const pinsInRow = row + 1;
+                for (let row = 1; row <= rows; row++) {
+                    const pinsInRow = row;
                     const rowWidth = (pinsInRow - 1) * pinSpacing;
                     const startX = centerX - rowWidth / 2;
                     
                     for (let col = 0; col < pinsInRow; col++) {
                         const x = startX + col * pinSpacing;
-                        const y = startY + row * pinSpacing;
+                        const y = startY + (row - 1) * pinSpacing;
                         
                         this.pins.push({
                             x: x,
@@ -1972,30 +1973,46 @@
             
             setupMultipliers(riskLevel, rows) {
                 this.multipliers = [];
-                const slotCount = rows + 1;
-                const slotWidth = this.boardWidth / slotCount;
                 
+                // Calculate multiplier positions to align with gaps between last row pins
+                const pinSpacing = 60;
+                const centerX = this.boardWidth / 2;
+                const lastRowPins = rows;
+                const lastRowWidth = (lastRowPins - 1) * pinSpacing;
+                const lastRowStartX = centerX - lastRowWidth / 2;
+                
+                // Multipliers go in the gaps between pins, so we have rows + 1 slots
+                const slotCount = rows + 1;
                 let multiplierValues = [];
                 
                 if (riskLevel === 'low') {
-                    // Low risk: mostly positive multipliers
                     multiplierValues = this.generateLowRiskMultipliers(slotCount);
                 } else if (riskLevel === 'medium') {
-                    // Medium risk: balanced
                     multiplierValues = this.generateMediumRiskMultipliers(slotCount);
                 } else {
-                    // High risk: extreme multipliers
                     multiplierValues = this.generateHighRiskMultipliers(slotCount);
                 }
                 
+                // Position multipliers in the gaps between the last row pins
                 for (let i = 0; i < slotCount; i++) {
-                    const x = i * slotWidth + slotWidth / 2;
-                    const y = this.boardHeight - 30;
+                    let x;
+                    if (i === 0) {
+                        // First slot: before the first pin
+                        x = lastRowStartX - pinSpacing / 2;
+                    } else if (i === slotCount - 1) {
+                        // Last slot: after the last pin
+                        x = lastRowStartX + lastRowWidth + pinSpacing / 2;
+                    } else {
+                        // Middle slots: between pins
+                        x = lastRowStartX + (i - 0.5) * pinSpacing;
+                    }
+                    
+                    const y = this.boardHeight - 50;
                     
                     this.multipliers.push({
                         x: x,
                         y: y,
-                        width: slotWidth - 2,
+                        width: pinSpacing * 0.8,
                         value: multiplierValues[i],
                         index: i
                     });
@@ -2105,9 +2122,9 @@
             dropBall() {
                 console.log('Creating new ball...');
                 const ball = {
-                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 40,
-                    y: 30,
-                    vx: (Math.random() - 0.5) * 3,
+                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 20, // Drop from center
+                    y: 50, // Start higher up
+                    vx: (Math.random() - 0.5) * 2,
                     vy: 0,
                     radius: this.ballRadius,
                     color: this.getRandomBallColor(),
@@ -2116,6 +2133,7 @@
                 
                 this.balls.push(ball);
                 console.log('Ball added. Total balls:', this.balls.length);
+                console.log('Ball position:', ball.x, ball.y);
             }
             
             getRandomBallColor() {
@@ -2193,13 +2211,23 @@
             }
             
             checkMultiplierCollision(ball) {
-                const slotIndex = Math.floor(ball.x / (this.boardWidth / this.multipliers.length));
-                const clampedIndex = Math.max(0, Math.min(this.multipliers.length - 1, slotIndex));
-                const multiplier = this.multipliers[clampedIndex];
+                // Find the closest multiplier slot to the ball's x position
+                let closestIndex = 0;
+                let closestDistance = Math.abs(ball.x - this.multipliers[0].x);
+                
+                for (let i = 1; i < this.multipliers.length; i++) {
+                    const distance = Math.abs(ball.x - this.multipliers[i].x);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestIndex = i;
+                    }
+                }
+                
+                const multiplier = this.multipliers[closestIndex];
                 
                 return {
                     multiplier: multiplier.value,
-                    index: clampedIndex
+                    index: closestIndex
                 };
             }
             
