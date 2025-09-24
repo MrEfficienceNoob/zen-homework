@@ -1026,55 +1026,6 @@
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
         }
         
-        .multipliers-bar {
-            display: flex;
-            gap: 3px;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 20px;
-        }
-        
-        .multiplier {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
-            color: #000;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            min-width: 50px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-            border: 2px solid #00ff88;
-            transition: all 0.3s ease;
-        }
-        
-        .multiplier.high {
-            background: linear-gradient(135deg, #ff4444, #cc0000);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-            border-color: #ff4444;
-        }
-        
-        .multiplier.medium {
-            background: linear-gradient(135deg, #ffa726, #ff8f00);
-            color: #000;
-            box-shadow: 0 0 10px rgba(255, 167, 38, 0.3);
-            border-color: #ffa726;
-        }
-        
-        .multiplier.low {
-            background: linear-gradient(135deg, #66bb6a, #4caf50);
-            color: #000;
-            box-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
-            border-color: #66bb6a;
-        }
-        
-        .multiplier:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-        }
         
         /* Plinko Result Display */
         .plinko-result {
@@ -1463,8 +1414,7 @@
         </div>
 
         <div class="plinko-game-area">
-            <canvas id="plinkoCanvas" width="1200" height="800"></canvas>
-            <div class="multipliers-bar" id="multipliers"></div>
+            <canvas id="plinkoCanvas" width="600" height="500"></canvas>
         </div>
     </div>
 
@@ -1918,11 +1868,11 @@
                 this.multipliers = [];
                 this.animationId = null;
                 this.isRunning = false;
-                this.boardWidth = 1200;
-                this.boardHeight = 800;
-                this.pinRadius = 8;
-                this.ballRadius = 12;
-                this.gravity = 0.4;
+                this.boardWidth = 600;
+                this.boardHeight = 500;
+                this.pinRadius = 6;
+                this.ballRadius = 8;
+                this.gravity = 0.3;
                 this.friction = 0.98;
                 this.bounce = 0.7;
             }
@@ -1944,9 +1894,9 @@
                 // Clear existing pins
                 this.pins = [];
                 
-                // Create triangular pin arrangement for full-screen
-                const pinSpacing = 60; // Larger spacing for full-screen
-                const startY = 120; // Start lower to leave space for ball drop
+                // Create triangular pin arrangement - cropped to exact triangle size
+                const pinSpacing = 40; // Smaller spacing for cropped canvas
+                const startY = 60; // Start higher for ball drop space
                 const centerX = this.boardWidth / 2;
                 
                 // Start from row 1 (not row 0) to leave space for ball drop
@@ -1975,7 +1925,7 @@
                 this.multipliers = [];
                 
                 // Calculate multiplier positions to align with gaps between last row pins
-                const pinSpacing = 60;
+                const pinSpacing = 40; // Match the pin spacing from setupBoard
                 const centerX = this.boardWidth / 2;
                 const lastRowPins = rows;
                 const lastRowWidth = (lastRowPins - 1) * pinSpacing;
@@ -1997,7 +1947,10 @@
                     multiplierValues = this.generateHighRiskMultipliers(slotCount);
                 }
                 
-                // Position multipliers in the gaps between the last row pins
+                // Position multipliers directly under the last row of pins
+                const lastRowY = 60 + (rows - 1) * pinSpacing; // Y position of last row
+                const multiplierY = lastRowY + pinSpacing + 20; // Position directly under with some spacing
+                
                 for (let i = 0; i < slotCount; i++) {
                     let x;
                     if (i === 0) {
@@ -2011,11 +1964,9 @@
                         x = lastRowStartX + (i - 0.5) * pinSpacing;
                     }
                     
-                    const y = this.boardHeight - 50;
-                    
                     this.multipliers.push({
                         x: x,
-                        y: y,
+                        y: multiplierY,
                         width: pinSpacing * 0.8,
                         value: multiplierValues[i],
                         index: i
@@ -2126,9 +2077,9 @@
             dropBall() {
                 console.log('Creating new ball...');
                 const ball = {
-                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 20, // Drop from center
-                    y: 50, // Start higher up
-                    vx: (Math.random() - 0.5) * 2,
+                    x: this.boardWidth / 2 + (Math.random() - 0.5) * 15, // Drop from center
+                    y: 30, // Start higher up in the smaller canvas
+                    vx: (Math.random() - 0.5) * 1.5,
                     vy: 0,
                     radius: this.ballRadius,
                     color: this.getRandomBallColor(),
@@ -2283,16 +2234,32 @@
                     this.ctx.shadowBlur = 0;
                 });
                 
-                // Draw multiplier slots
+                // Draw multiplier slots (green boxes)
                 this.ctx.strokeStyle = '#00ff88';
                 this.ctx.lineWidth = 2;
+                this.ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
                 this.multipliers.forEach(multiplier => {
+                    // Draw green box
+                    this.ctx.fillRect(
+                        multiplier.x - multiplier.width / 2,
+                        multiplier.y - 15,
+                        multiplier.width,
+                        30
+                    );
                     this.ctx.strokeRect(
                         multiplier.x - multiplier.width / 2,
                         multiplier.y - 15,
                         multiplier.width,
                         30
                     );
+                    
+                    // Draw multiplier text inside the box
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.font = 'bold 16px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(multiplier.value + 'x', multiplier.x, multiplier.y);
+                    this.ctx.fillStyle = 'rgba(0, 255, 136, 0.1)'; // Reset for next iteration
                 });
             }
             
