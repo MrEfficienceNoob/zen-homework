@@ -1938,7 +1938,7 @@
                 this.animationId = null;
                 this.isRunning = false;
                 this.boardWidth = 400;
-                this.boardHeight = 400;
+                this.boardHeight = 500; // Match canvas height
                 this.pinRadius = 4;
                 this.ballRadius = 6;
                 this.gravity = 0.3;
@@ -1947,10 +1947,13 @@
             }
             
             init(canvas) {
+                console.log('Initializing Plinko game...');
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
+                console.log('Canvas context:', this.ctx);
                 this.setupBoard();
                 this.startAnimation();
+                console.log('Plinko game initialized successfully');
             }
             
             setupBoard() {
@@ -2119,6 +2122,7 @@
             }
             
             dropBall() {
+                console.log('Creating new ball...');
                 const ball = {
                     x: this.boardWidth / 2 + (Math.random() - 0.5) * 20,
                     y: 20,
@@ -2130,6 +2134,7 @@
                 };
                 
                 this.balls.push(ball);
+                console.log('Ball added. Total balls:', this.balls.length);
             }
             
             getRandomBallColor() {
@@ -2322,6 +2327,9 @@
                 const betAmount = parseFloat(document.getElementById('betAmount').value);
                 const winnings = betAmount * result.multiplier;
                 
+                // Stop the game
+                this.isRunning = false;
+                
                 // Add winnings to balance
                 addWinnings(winnings);
                 
@@ -2335,7 +2343,7 @@
                             <div class="result-item">
                                 <span class="result-label">Bet:</span>
                                 <span class="result-value">$${betAmount.toFixed(2)}</span>
-                        </div>
+                            </div>
                             <div class="result-item">
                                 <span class="result-label">Multiplier:</span>
                                 <span class="result-value multiplier-${result.multiplier >= 5 ? 'high' : result.multiplier >= 1 ? 'medium' : 'low'}">${result.multiplier}x</span>
@@ -2428,8 +2436,14 @@
             
             // Drop ball
             if (plinkoGame) {
+                console.log('Dropping ball...');
                 plinkoGame.isRunning = true;
                 plinkoGame.dropBall();
+            } else {
+                console.error('Plinko game not initialized!');
+                alert('Game not initialized. Please try again.');
+                playButton.disabled = false;
+                playButton.textContent = 'Play';
             }
         }
         
