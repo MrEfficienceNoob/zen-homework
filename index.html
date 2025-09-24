@@ -1590,7 +1590,214 @@
             updateLibraryBalanceDisplay();
         }
         
-        // Plinko game removed - waiting for new prompt
+        // Gamba Library Data
+        const gambaLibrary = [
+            {
+                id: 'plinko',
+                title: 'Plinko',
+                description: 'Drop balls through pins and watch them bounce to multipliers. Classic casino game with modern physics.',
+                icon: '🎯',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Casino'
+            },
+            {
+                id: 'dice',
+                title: 'Dice',
+                description: 'Roll the dice and predict the outcome. Simple yet exciting gambling game.',
+                icon: '🎲',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Casino'
+            },
+            {
+                id: 'roulette',
+                title: 'Roulette',
+                description: 'Spin the wheel and bet on numbers, colors, or sections. The ultimate casino classic.',
+                icon: '🎰',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Casino'
+            },
+            {
+                id: 'blackjack',
+                title: 'Blackjack',
+                description: 'Beat the dealer by getting as close to 21 as possible without going over.',
+                icon: '🃏',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Card Game'
+            },
+            {
+                id: 'slots',
+                title: 'Slots',
+                description: 'Pull the lever and watch the reels spin. Match symbols to win big!',
+                icon: '🎰',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Casino'
+            },
+            {
+                id: 'poker',
+                title: 'Poker',
+                description: 'Test your poker skills against AI opponents in this classic card game.',
+                icon: '🂡',
+                status: 'Under Maintenance',
+                functional: false,
+                category: 'Card Game'
+            }
+        ];
+
+        // Player Balance
+        let playerBalance = 1000;
+
+        // Game Library Functions
+        function populateGameLibrary() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+            
+            gameLibrary.forEach((game, index) => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card empty';
+                gameCard.style.animationDelay = `${index * 0.1}s`;
+                
+                gameCard.innerHTML = `
+                    <div class="game-icon">${game.icon}</div>
+                    <h3 class="game-title">?</h3>
+                    <p class="game-description">Under Maintenance</p>
+                    <div class="game-status">Under Maintenance</div>
+                `;
+                
+                gameCard.onclick = () => {
+                    // All games are under maintenance
+                    alert('This game is currently under maintenance. Please check back later!');
+                };
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        function populateGambaLibrary() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+            
+            gambaLibrary.forEach((game, index) => {
+                const gameCard = document.createElement('div');
+                gameCard.className = game.functional ? 'game-card functional' : 'game-card empty';
+                gameCard.style.animationDelay = `${index * 0.1}s`;
+                
+                let gameContent;
+                if (game.functional) {
+                    gameContent = `
+                        <div class="game-icon">${game.icon}</div>
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-description">${game.description}</p>
+                    `;
+                } else {
+                    gameContent = `
+                        <div class="game-icon" style="font-size: 4rem; color: #ff4444;">?</div>
+                        <div class="game-status">Under Maintenance</div>
+                    `;
+                }
+                
+                gameCard.innerHTML = gameContent;
+                
+                gameCard.onclick = () => {
+                    if (game.functional) {
+                        // Game is functional - implement game logic here
+                        alert(`Opening ${game.title}...`);
+                    } else {
+                        // Game is under maintenance
+                        alert('This game is currently under maintenance. Please check back later!');
+                    }
+                };
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        function animateGameCards() {
+            const gameCards = document.querySelectorAll('.game-card');
+            gameCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-in');
+                }, index * 100);
+            });
+        }
+
+        // Dollar Jump Effect
+        function startDollarJumpEffect() {
+            const gambaButton = document.querySelector('.gamba-button');
+            if (!gambaButton) return;
+            
+            const createDollarSign = () => {
+                const dollar = document.createElement('div');
+                dollar.className = 'dollar-jump';
+                dollar.textContent = '$';
+                
+                // Random position on the button
+                const buttonRect = gambaButton.getBoundingClientRect();
+                const randomX = buttonRect.left + Math.random() * buttonRect.width;
+                const randomY = buttonRect.top + Math.random() * buttonRect.height;
+                
+                dollar.style.left = randomX + 'px';
+                dollar.style.top = randomY + 'px';
+                dollar.style.setProperty('--random-rotation', Math.random() * 360 + 'deg');
+                
+                document.body.appendChild(dollar);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    if (dollar.parentNode) {
+                        dollar.parentNode.removeChild(dollar);
+                    }
+                }, 2000);
+            };
+            
+            // Create 4-5 dollar signs
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createDollarSign, i * 100);
+            }
+            
+            // Loop the effect
+            setTimeout(() => {
+                startDollarJumpEffect();
+            }, 3000);
+        }
+
+        function stopDollarJumpEffect() {
+            // This would stop the dollar jump effect if needed
+        }
+
+        // Slot Machine Animation
+        function startSlotMachine() {
+            const reels = ['reel1', 'reel2', 'reel3'];
+            const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            
+            reels.forEach((reelId, index) => {
+                const reel = document.getElementById(reelId);
+                reel.classList.add('spinning');
+                
+                // Spin for different durations
+                const spinDuration = 1000 + (index * 200);
+                
+                setTimeout(() => {
+                    reel.classList.remove('spinning');
+                    reel.classList.add('winning');
+                    reel.textContent = '7';
+                    
+                    // Remove winning class after animation
+                    setTimeout(() => {
+                        reel.classList.remove('winning');
+                    }, 500);
+                }, spinDuration);
+            });
+            
+            // Loop the animation
+            setTimeout(() => {
+                startSlotMachine();
+            }, 5000);
+        }
 
         // Initialize
         new EnhancedParticleSystem();
