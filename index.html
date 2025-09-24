@@ -806,225 +806,6 @@
             background: transparent;
         }
         
-        /* Full-Screen Plinko Game */
-        .plinko-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-            display: none;
-            flex-direction: column;
-            z-index: 2000;
-            overflow: hidden;
-        }
-        
-        .plinko-fullscreen.active {
-            display: flex;
-        }
-        
-        .plinko-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
-            border-bottom: 2px solid #00ff88;
-            box-shadow: 0 2px 20px rgba(0, 255, 136, 0.3);
-        }
-        
-        .back-to-library {
-            background: transparent;
-            color: #00ff88;
-            border: 2px solid #00ff88;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .back-to-library:hover {
-            background: #00ff88;
-            color: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
-        }
-        
-        .plinko-header h1 {
-            color: #00ff88;
-            font-size: 2.5rem;
-            font-weight: 600;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-            margin: 0;
-        }
-        
-        .balance-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-            padding: 12px 20px;
-            border-radius: 15px;
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-        
-        .balance-label {
-            color: #00ff88;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-        
-        .balance-amount {
-            color: #fff;
-            font-size: 1.3rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
-        }
-        
-        .balance-currency {
-            color: #ffd700;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        
-        .plinko-controls-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(26, 26, 46, 0.8));
-            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
-        }
-        
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .control-group label {
-            color: #00ff88;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .amount-input {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #00ff88;
-            border-radius: 10px;
-            padding: 8px;
-            gap: 8px;
-        }
-        
-        .coin-icon {
-            font-size: 1.2rem;
-        }
-        
-        .amount-input input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            width: 80px;
-            outline: none;
-        }
-        
-        .amount-buttons {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .amount-buttons button {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
-            color: #000;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .amount-buttons button:hover {
-            background: linear-gradient(135deg, #00ff88, #00ffaa);
-            transform: scale(1.05);
-        }
-        
-        .control-group select {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #00ff88;
-            border-radius: 8px;
-            color: #fff;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            outline: none;
-            cursor: pointer;
-            min-width: 100px;
-        }
-        
-        .control-group select option {
-            background: #1a1a2e;
-            color: #fff;
-        }
-        
-        .play-button {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-        
-        .play-button:hover {
-            background: linear-gradient(135deg, #00ff88, #00ffaa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 25px rgba(0, 255, 136, 0.5);
-        }
-        
-        .play-button:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .plinko-game-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
-        
-        #plinkoCanvas {
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            border-radius: 15px;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-        }
         
         
         /* Plinko Result Display */
@@ -1368,55 +1149,6 @@
                 </div>
                 </div>
 
-    <!-- Full-Screen Plinko Game -->
-    <div class="plinko-fullscreen" id="plinkoFullscreen">
-        <div class="plinko-header">
-            <button class="back-to-library" onclick="closePlinkoGame()">← Back to Library</button>
-            <h1>🎯 Plinko Game</h1>
-            <div class="balance-display">
-                <span class="balance-label">Balance:</span>
-                <span class="balance-amount" id="balanceAmount">1,000</span>
-                <span class="balance-currency">₿</span>
-                </div>
-            </div>
-        
-        <div class="plinko-controls-bar">
-            <div class="control-group">
-                <label>Amount</label>
-                <div class="amount-input">
-                    <span class="coin-icon">💰</span>
-                    <input type="number" id="betAmount" value="1.00" min="0.01" step="0.01">
-                    <div class="amount-buttons">
-                        <button onclick="adjustAmount(0.5)">½</button>
-                        <button onclick="adjustAmount(2)">2×</button>
-                </div>
-                </div>
-            </div>
-            <div class="control-group">
-                <label>Risk</label>
-                <select id="riskLevel" onchange="initializePlinkoBoard()">
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-        </div>
-            <div class="control-group">
-                <label>Rows</label>
-                <select id="rowCount" onchange="initializePlinkoBoard()">
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="12">12</option>
-                    <option value="14">14</option>
-                    <option value="16">16</option>
-                </select>
-                </div>
-            <button class="play-button" id="playButton" onclick="playPlinko()">Play</button>
-        </div>
-
-        <div class="plinko-game-area">
-            <canvas id="plinkoCanvas" width="600" height="500"></canvas>
-        </div>
-    </div>
 
     <script>
         // Enhanced Particle System with Hover-Based Connections
@@ -1858,45 +1590,32 @@
             updateLibraryBalanceDisplay();
         }
         
-        // Full-Screen Plinko Game Implementation
-        class PlinkoGame {
-            constructor() {
-                this.canvas = null;
-                this.ctx = null;
-                this.pins = [];
-                this.balls = [];
-                this.multipliers = [];
-                this.animationId = null;
-                this.isRunning = false;
-                this.boardWidth = 600;
-                this.boardHeight = 500;
-                this.pinRadius = 6;
-                this.ballRadius = 8;
-                this.gravity = 0.3;
-                this.friction = 0.98;
-                this.bounce = 0.7;
-            }
-            
-            init(canvas) {
-                console.log('Initializing Plinko game...');
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                console.log('Canvas context:', this.ctx);
-                this.setupBoard();
-                this.startAnimation();
-                console.log('Plinko game initialized successfully');
-            }
-            
-            setupBoard() {
-                const rows = parseInt(document.getElementById('rowCount').value);
-                const riskLevel = document.getElementById('riskLevel').value;
-                
-                // Clear existing pins
-                this.pins = [];
-                
-                // Create triangular pin arrangement - cropped to exact triangle size
-                const pinSpacing = 40; // Smaller spacing for cropped canvas
-                const startY = 60; // Start higher for ball drop space
+        // Plinko game removed - waiting for new prompt
+
+        // Initialize
+        new EnhancedParticleSystem();
+        
+        // Start dollar jump effect and slot machine when category page becomes active
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const categoryPage = document.getElementById('categoryPage');
+                    if (categoryPage && categoryPage.classList.contains('active')) {
+                        startDollarJumpEffect();
+                        startSlotMachine();
+                    }
+                }
+            });
+        });
+        
+        const categoryPage = document.getElementById('categoryPage');
+        if (categoryPage) {
+            observer.observe(categoryPage, { attributes: true, attributeFilter: ['class'] });
+        }
+        
+    </script>
+</body>
+</html>
                 const centerX = this.boardWidth / 2;
                 
                 // Start from row 1 (not row 0) to leave space for ball drop
